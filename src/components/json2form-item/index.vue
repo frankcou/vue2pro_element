@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-10 14:56:42
+ * @LastEditTime: 2022-06-10 18:06:54
  * @LastEditors: zoufengfan
 -->
 
@@ -65,7 +65,10 @@ export default {
     return (
       <el-form-item
         label={this.item.title}
-        props={{ prop: this.item.dataIndex, ...this.item.formItemProps }}
+        props={{
+          prop: this.item.dataIndex,
+          ...getObj(this.item.formItemProps),
+        }}
       >
         {(() => {
           if (this.item.fieldRender) {

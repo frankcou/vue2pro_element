@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-10 18:03:11
+ * @LastEditTime: 2022-06-10 18:07:33
  * @LastEditors: zoufengfan
 -->
 
@@ -67,7 +67,7 @@ jsx-vue2 的使用方法[https://github.com/vuejs/jsx-vue2]
       //   },
       // },
     },
-    formItemProps: {},//选填,formitem属性
+    formItemProps: {},//选填,formitem属性,支持(form)=>FormItemProps类型
     transform: (e) => ({//选填,用于转换成其他字段
       startTime: e[0],
       endTime: e[1],
