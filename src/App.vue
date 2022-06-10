@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:07:51
- * @LastEditTime: 2022-06-10 15:08:20
+ * @LastEditTime: 2022-06-10 17:14:42
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -47,7 +47,17 @@ export default {
       });
     },
   },
+  mounted() {
+    this.$refs["protable"].handleSearch();
+  },
 };
 </script>
 
-<style></style>
+<style>
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+</style>

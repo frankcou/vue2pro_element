@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-10 15:18:38
+ * @LastEditTime: 2022-06-10 18:00:50
  * @LastEditors: zoufengfan
 -->
 
@@ -59,8 +59,6 @@ export default {
           size: "medium",
           height: "100%",
         },
-        // events:{}
-        //  methods:{}
       }),
     },
     // ========= el-pagination组件相关,与文档一样 ==========
@@ -73,8 +71,6 @@ export default {
           pageSizes: [10, 50, 100, 200],
           layout: "total, sizes, prev, pager, next, jumper",
         },
-        // events:{}
-        //  methods:{}
       }),
     },
   },
@@ -259,7 +255,7 @@ export default {
     flex: 1;
   }
   ::v-deep .pro_table-pagination {
-    margin-top: 15px;
+    padding: 15px 0;
     text-align: center;
   }
 }

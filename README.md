@@ -1,24 +1,29 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-10 14:29:15
+ * @LastEditTime: 2022-06-10 18:00:25
  * @LastEditors: zoufengfan
 -->
 
-# vue2components_zff
+# vue2pro_element
 
 ## 项目配置
 
-- Then add the preset to `babel.config.js`:
+- babel.config.js:
   ```js
   module.exports = {
     presets: ["@vue/babel-preset-jsx"],
   };
   ```
 - main.js
+
   ```js
-  import ProTable from "vue2protable";
-  Vue.use(ProTable, { ElementUI: ElementUI }); // 注册使用Element
+  import "element-ui/lib/theme-chalk/index.css";
+  import ProTable from "vue2pro_element";
+  import ElementUI from "element-ui";
+
+  Vue.use(ElementUI, { size: "small" });
+  Vue.use(ProTable);
   ```
 
 ## 项目运行/开发
@@ -33,7 +38,20 @@ jsx-vue2 的使用方法[https://github.com/vuejs/jsx-vue2]
 
 ## pro-table
 
-`pro-table` 的 `columns` 配置/`json2form-item` 的 `item` 配置/`json2table-column` 的 `item` 配置
+### Props
+
+| 字段名           | 描述                             | 类型                                                                                    | 默认值                                                                                                     | 可选/必填 |
+| ---------------- | -------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
+| searchBarLoading | 异步获得 initialValue 的时候需要 | Boolean                                                                                 | false                                                                                                      | 可选      |
+| listPms          | 列表请求                         | ():Promise\<any\>=>({code: number,data: {content: [{}],totalSize: number},msg: string}) | -                                                                                                          | 必填      |
+| columns          | 表格/表单配置                    | Column \| Item (见下方)                                                                 | -                                                                                                          | 必填      |
+| canSearch        | 是否可以查询，相当于查询钩子     | (form) => Boolean                                                                       | (form) => true                                                                                             | 可选      |
+| table            | el-table 的相关配置              | Object                                                                                  | {props: {border: true,size: "medium",height: "100%",}\}                                                    | 可选      |
+| pagination       | el-pagination 的相关配置         | Object                                                                                  | { props: {pageSize: 10,pageSizes: [10, 50, 100, 200],layout: "total, sizes, prev, pager, next, jumper",}\} | 可选      |
+
+### Column/Item
+
+**pro-table** 的 **columns** 数组单个对象配置/**json2form-item** 的 **item** 配置/**json2table-column** 的 **item** 配置
 
 ```js
 {

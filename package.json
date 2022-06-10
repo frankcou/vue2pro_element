@@ -13,7 +13,7 @@
     "element-ui": "^2.15.9",
     "vue": "^2.6.11"
   },
-  "main": "index.js",
+  "main": "./src/components/index.js",
   "devDependencies": {
     "@vue/babel-helper-vue-jsx-merge-props": "^1.2.1",
     "@vue/babel-preset-jsx": "^1.2.4",
