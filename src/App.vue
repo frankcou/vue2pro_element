@@ -1,28 +1,53 @@
+<!--
+ * @Author: zoufengfan
+ * @Date: 2022-06-10 10:07:51
+ * @LastEditTime: 2022-06-10 15:08:20
+ * @LastEditors: zoufengfan
+-->
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <pro-table ref="protable" :columns="columns" :listPms="findPage">
+    </pro-table>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  data() {
+    return {
+      columns: [
+        { title: "title1", dataIndex: "a" },
+        { title: "title2", dataIndex: "b", typeValue: "select" },
+      ],
+    };
+  },
+  methods: {
+    findPage() {
+      return new Promise((res) => {
+        setTimeout(() => {
+          res({
+            code: 200,
+            data: {
+              content: [
+                {
+                  a: "a value1",
+                  b: "b value1",
+                },
+                {
+                  a: "a value2",
+                  b: "b value2",
+                },
+              ],
+              totalSize: 222,
+            },
+            msg: "msg",
+          });
+        }, 1000);
+      });
+    },
+  },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
