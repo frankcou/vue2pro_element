@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-13 17:23:31
+ * @LastEditTime: 2022-06-13 17:28:15
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -72,7 +72,7 @@ export default {
       immediate: true,
       handler(val, oldval) {
         if (!val) {
-          console.log("init pro-form");
+          //   console.log("init pro-form");
           // init
           this.columns.forEach((item) => {
             if (!item.hideInForm) {

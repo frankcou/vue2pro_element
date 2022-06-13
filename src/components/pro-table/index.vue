@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-10 18:00:50
+ * @LastEditTime: 2022-06-13 17:28:08
  * @LastEditors: zoufengfan
 -->
 
@@ -162,7 +162,7 @@ export default {
       immediate: true,
       handler(val, oldval) {
         if (!val) {
-          console.log("init columns");
+          // console.log("init columns");
           // init
           this.paginationAttr = this.pagination.props;
           this.columns.forEach((item) => {
@@ -181,8 +181,7 @@ export default {
   },
 
   render(h) {
-    console.log("pro-table渲染视图");
-    let form = this.form;
+    // console.log("pro-table渲染视图");
 
     return (
       <div class="pro_table">
