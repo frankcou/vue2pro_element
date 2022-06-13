@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-13 10:57:31
+ * @LastEditTime: 2022-06-13 16:08:10
  * @LastEditors: zoufengfan
 -->
 
@@ -25,20 +25,71 @@ export default {
     },
   },
   render(h) {
-    let item = this.item;
+    const { valueType, dataIndex, title, tableColumnProps, dataRender } =
+      this.item;
+    const options = this.item.options || [];
+
     return (
       <el-table-column
-        label={item.title}
-        key={item.dataIndex}
+        label={title}
+        key={dataIndex}
         header-align="center"
         align="center"
-        props={item.tableColumnProps}
-        attrs={item.tableColumnProps}
+        props={tableColumnProps}
+        attrs={tableColumnProps}
         scopedSlots={{
-          default: (scope) =>
-            item.dataRender
-              ? item.dataRender(scope)
-              : scope.row[item.dataIndex],
+          default: (scoped) => {
+            let value = scoped.row[dataIndex];
+
+            if (dataRender) {
+              return dataRender(scoped);
+            } else {
+              if (valueType === "select") {
+                // 分组
+                if (options[0] && options[0].value === undefined) {
+                  let label = "-";
+                  options.forEach((el) => {
+                    el.options.forEach((_el) => {
+                      if (_el.value === value) {
+                        label = _el.label;
+                      }
+                    });
+                  });
+                  return label;
+                }
+                // 非分组
+                let opt = options.find((el) => el.value === value);
+                return (opt && opt.label) || "-";
+              } else if (valueType === "file") {
+                return (
+                  <el-button
+                    type="text"
+                    disabled={!value}
+                    on={{
+                      click: () => {
+                        const newTab = window.open();
+                        newTab.opener = null;
+                        newTab.location.href = value;
+                      },
+                    }}
+                  >
+                    下载
+                  </el-button>
+                );
+              } else if (valueType === "img") {
+                return value ? (
+                  <el-image
+                    class="json-table-column-img"
+                    src={value}
+                    preview-src-list={[value]}
+                  ></el-image>
+                ) : (
+                  "-"
+                );
+              }
+              return value === null || value === undefined ? "-" : value;
+            }
+          },
         }}
       ></el-table-column>
     );
@@ -46,4 +97,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.json-table-column-img {
+  /* width: 40px; */
+  height: 40px;
+}
+</style>
