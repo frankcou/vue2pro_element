@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-13 14:26:49
+ * @LastEditTime: 2022-06-13 16:23:05
  * @LastEditors: zoufengfan
 -->
 
@@ -42,7 +42,6 @@ export default {
     const editable =
       this.item.editable === undefined ? true : this.item.editable;
     let options = getObj(this.item.options) || [];
-    console.log(valueType, options);
 
     const getFieldEvents = () => {
       let map = {
@@ -69,6 +68,14 @@ export default {
       return map;
     };
 
+    const styles = () => {
+      let styleMap = {};
+      if (this.item.colSize) {
+        styleMap.width = (this.item.colSize / 24) * 100 + "%";
+      }
+      return styleMap;
+    };
+
     return (
       <el-form-item
         label={this.item.title}
@@ -78,11 +85,11 @@ export default {
           required:
             editable && formItemProps && (formItemProps.required || false),
         }}
+        style={styles()}
       >
         {editable
           ? // 编辑模式
             (() => {
-              console.log("编辑模式");
               if (this.item.fieldRender) {
                 return this.item.fieldRender(this.form);
               } else {
@@ -102,14 +109,10 @@ export default {
                     return (
                       <div>
                         {options.map((group) => (
-                          <el-option-group
-                            key={group.label}
-                            label={group.label}
-                          >
+                          <el-option-group key={group.label} props={group}>
                             <el-option
                               key={item.value}
-                              label={item.label}
-                              value={item.value}
+                              props={item}
                             ></el-option>
                           </el-option-group>
                         ))}
@@ -120,11 +123,7 @@ export default {
                   return (
                     <div>
                       {options.map((item) => (
-                        <el-option
-                          key={item.value}
-                          label={item.label}
-                          value={item.value}
-                        ></el-option>
+                        <el-option key={item.value} props={item}></el-option>
                       ))}
                     </div>
                   );
@@ -174,13 +173,12 @@ export default {
             })()
           : // 阅读模式
             (() => {
-              console.log("阅读模式");
               if (this.item.dataRender) {
                 return this.item.dataRender(this.form);
               } else {
                 if (valueType === "select") {
                   // 分组
-                  if (options[0].options) {
+                  if (options[0] && options[0].value === undefined) {
                     let label = "-";
                     options.forEach((el) => {
                       el.options.forEach((_el) => {
@@ -195,7 +193,7 @@ export default {
                   let opt = options.find(
                     (el) => el.value === this.form[dataIndex]
                   );
-                  return opt.label || "-";
+                  return (opt && opt.label) || "-";
                 } else if (valueType === "file") {
                   return (
                     <el-button
@@ -215,7 +213,7 @@ export default {
                 } else if (valueType === "img") {
                   return this.form[dataIndex] ? (
                     <el-image
-                      style="width: 100px; height: 100px"
+                      class="json-form-item-img"
                       src={this.form[dataIndex]}
                       preview-src-list={[this.form[dataIndex]]}
                     ></el-image>
@@ -235,4 +233,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.json-form-item-img {
+  width: 70px;
+  height: 70px;
+}
+</style>

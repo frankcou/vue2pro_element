@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-13 15:57:07
+ * @LastEditTime: 2022-06-13 16:35:27
  * @LastEditors: zoufengfan
 -->
 
@@ -86,7 +86,8 @@ vue run serve
         </div>
       ),
     },
-    //选填,select组件中用于循环el-options以及数据回显根据
+    //选填,select组件中用于循环el-options以及数据(table/form)回显根据。
+    // 支持funciton写法。渲染表单时形参为表单数据对象，表格时为scoped对象
     options: [
       {label:'选项1',value:1},//非分组的写法
       {label:'分组1',options:[{label:'选项1',value:1}]},//分组的写法

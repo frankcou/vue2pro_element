@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-13 16:08:10
+ * @LastEditTime: 2022-06-13 16:24:55
  * @LastEditors: zoufengfan
 -->
 
@@ -25,9 +25,13 @@ export default {
     },
   },
   render(h) {
+    const getObj = (scoped, obj) => {
+      if (!obj) return obj;
+      if (obj.constructor === Object || obj.constructor === Array) return obj;
+      if (obj.constructor === Function) return obj(scoped);
+    };
     const { valueType, dataIndex, title, tableColumnProps, dataRender } =
       this.item;
-    const options = this.item.options || [];
 
     return (
       <el-table-column
@@ -40,6 +44,7 @@ export default {
         scopedSlots={{
           default: (scoped) => {
             let value = scoped.row[dataIndex];
+            const options = getObj(scoped, this.item.options) || [];
 
             if (dataRender) {
               return dataRender(scoped);
