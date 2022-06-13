@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-13 11:39:00
+ * @LastEditTime: 2022-06-13 15:57:07
  * @LastEditors: zoufengfan
 -->
 
@@ -86,7 +86,7 @@ vue run serve
         </div>
       ),
     },
-    //选填,select组件中el-options的配置无需自己循环,支持(form)=>Options类型
+    //选填,select组件中用于循环el-options以及数据回显根据
     options: [
       {label:'选项1',value:1},//非分组的写法
       {label:'分组1',options:[{label:'选项1',value:1}]},//分组的写法
@@ -103,7 +103,7 @@ vue run serve
       );
     },
     tableColumnProps: {},//选填,tableColumn属性
-    dataRender: ( scoped) => {//选填,tableColumn/表单（editable === false时）内容的自定义
+    dataRender: (scoped) => {//选填,表格/表单（只有editable === false时）内容的自定义，渲染表单内容时scoped为表单数据对象
       return <p>{scoped.row.xxxx}{scoped.$index}</p>;
     },
     hideInForm: true,//选填,默认false
