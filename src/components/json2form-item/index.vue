@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-13 10:13:05
+ * @LastEditTime: 2022-06-13 14:26:49
  * @LastEditors: zoufengfan
 -->
 
@@ -9,14 +9,15 @@
 export default {
   name: "json2form-item",
   props: {
+    // json配置
     item: {
       type: Object,
       required: true,
     },
     // form数据存储对象
     model: {
-      type: Object,
       required: true,
+      type: Object,
     },
   },
   computed: {
@@ -32,17 +33,22 @@ export default {
   render() {
     const getObj = (obj) => {
       if (!obj) return obj;
-      if (obj.constructor === Object) return obj;
+      if (obj.constructor === Object || obj.constructor === Array) return obj;
       if (obj.constructor === Function) return obj(this.form);
     };
-
+    const { dataIndex, valueType } = this.item;
     const fieldProps = getObj(this.item.fieldProps);
+    const formItemProps = getObj(this.item.formItemProps);
+    const editable =
+      this.item.editable === undefined ? true : this.item.editable;
+    let options = getObj(this.item.options) || [];
+    console.log(valueType, options);
 
     const getFieldEvents = () => {
       let map = {
         input: (e) => {
           // 正常赋值
-          this.form[this.item.dataIndex] = e;
+          this.form[dataIndex] = e;
           // 额外赋值
           if (this.item.transform) {
             let object = this.item.transform(e);
@@ -67,105 +73,162 @@ export default {
       <el-form-item
         label={this.item.title}
         props={{
-          prop: this.item.dataIndex,
-          ...getObj(this.item.formItemProps),
+          prop: dataIndex,
+          ...formItemProps,
+          required:
+            editable && formItemProps && (formItemProps.required || false),
         }}
       >
-        {(() => {
-          if (this.item.fieldRender) {
-            return this.item.fieldRender(this.form);
-          } else {
-            let p = {
-              attrs: fieldProps,
-              props: { value: this.form[this.item.dataIndex], ...fieldProps },
-              on: getFieldEvents(),
-              scopedSlots: getObj(this.item.scopedSlots),
-            };
-
-            let options = getObj(this.item.options);
-
-            // select 的 options
-            let selectScopedSlots = () => {
-              // 分组的options
-              if (options[0].options) {
-                return {
-                  default: (
+        {editable
+          ? // 编辑模式
+            (() => {
+              console.log("编辑模式");
+              if (this.item.fieldRender) {
+                return this.item.fieldRender(this.form);
+              } else {
+                let p = {
+                  attrs: fieldProps,
+                  props: {
+                    value: this.form[dataIndex],
+                    ...fieldProps,
+                  },
+                  on: getFieldEvents(),
+                  scopedSlots: getObj(this.item.scopedSlots),
+                };
+                // select 的 options
+                let selectOptions = () => {
+                  // 分组的options
+                  if (options[0] && options[0].value === undefined) {
+                    return (
+                      <div>
+                        {options.map((group) => (
+                          <el-option-group
+                            key={group.label}
+                            label={group.label}
+                          >
+                            <el-option
+                              key={item.value}
+                              label={item.label}
+                              value={item.value}
+                            ></el-option>
+                          </el-option-group>
+                        ))}
+                      </div>
+                    );
+                  }
+                  // 非分组的options
+                  return (
                     <div>
-                      {options.map((group) => (
-                        <el-option-group key={group.label} label={group.label}>
-                          <el-option
-                            key={item.value}
-                            label={item.label}
-                            value={item.value}
-                          ></el-option>
-                        </el-option-group>
+                      {options.map((item) => (
+                        <el-option
+                          key={item.value}
+                          label={item.label}
+                          value={item.value}
+                        ></el-option>
                       ))}
                     </div>
-                  ),
+                  );
                 };
-              }
-              // 非分组的options
-              return {
-                default: (
-                  <div>
-                    {options.map((item) => (
-                      <el-option
-                        key={item.value}
-                        label={item.label}
-                        value={item.value}
-                      ></el-option>
-                    ))}
-                  </div>
-                ),
-              };
-            };
 
-            return (
-              <div>
-                {(!this.item.valueType || this.item.valueType === "input") && (
-                  <el-input {...p}></el-input>
-                )}
-                {this.item.valueType === "input-number" && (
-                  <el-input-number {...p}></el-input-number>
-                )}
-                {this.item.valueType === "select" && (
-                  <el-select scopedSlots={selectScopedSlots} {...p}></el-select>
-                )}
-                {this.item.valueType === "cascader" && (
-                  <el-cascader {...p}></el-cascader>
-                )}
-                {this.item.valueType === "switch" && (
-                  <el-switch {...p}></el-switch>
-                )}
-                {this.item.valueType === "time-select" && (
-                  <el-time-select {...p}></el-time-select>
-                )}
-                {this.item.valueType === "date-picker" && (
-                  <el-date-picker {...p}></el-date-picker>
-                )}
-                {this.item.valueType === "date-time-picker" && (
-                  <el-date-picker {...p}></el-date-picker>
-                )}
-                {this.item.valueType === "radio" && (
-                  <el-radio {...p}></el-radio>
-                )}
-                {this.item.valueType === "checkbox" && (
-                  <el-checkbox {...p}></el-checkbox>
-                )}
-                {this.item.valueType === "transfer" && (
-                  <el-transfer {...p}></el-transfer>
-                )}
-                {/*  {this.item.valueType === 'file' && (
+                return (
+                  <div>
+                    {(!valueType || valueType === "input") && (
+                      <el-input {...p}></el-input>
+                    )}
+                    {valueType === "input-number" && (
+                      <el-input-number {...p}></el-input-number>
+                    )}
+                    {valueType === "select" && (
+                      <el-select {...p}>{selectOptions()}</el-select>
+                    )}
+                    {valueType === "cascader" && (
+                      <el-cascader {...p}></el-cascader>
+                    )}
+                    {valueType === "switch" && <el-switch {...p}></el-switch>}
+                    {valueType === "time-select" && (
+                      <el-time-select {...p}></el-time-select>
+                    )}
+                    {valueType === "date-picker" && (
+                      <el-date-picker {...p}></el-date-picker>
+                    )}
+                    {valueType === "date-time-picker" && (
+                      <el-date-picker {...p}></el-date-picker>
+                    )}
+                    {valueType === "radio" && <el-radio {...p}></el-radio>}
+                    {valueType === "checkbox" && (
+                      <el-checkbox {...p}></el-checkbox>
+                    )}
+                    {valueType === "transfer" && (
+                      <el-transfer {...p}></el-transfer>
+                    )}
+                    {/*  {valueType === 'file' && (
                       <el-select
                       ></el-select>
-                    )}{this.item.valueType === 'img' && (
+                    )}{valueType === 'img' && (
                       <el-select
                       ></el-select>
                     )} */}
-              </div>
-            );
-          }
-        })()}
+                  </div>
+                );
+              }
+            })()
+          : // 阅读模式
+            (() => {
+              console.log("阅读模式");
+              if (this.item.dataRender) {
+                return this.item.dataRender(this.form);
+              } else {
+                if (valueType === "select") {
+                  // 分组
+                  if (options[0].options) {
+                    let label = "-";
+                    options.forEach((el) => {
+                      el.options.forEach((_el) => {
+                        if (_el.value === this.form[dataIndex]) {
+                          label = _el.label;
+                        }
+                      });
+                    });
+                    return label;
+                  }
+                  // 非分组
+                  let opt = options.find(
+                    (el) => el.value === this.form[dataIndex]
+                  );
+                  return opt.label || "-";
+                } else if (valueType === "file") {
+                  return (
+                    <el-button
+                      type="text"
+                      disabled={!this.form[dataIndex]}
+                      on={{
+                        click: () => {
+                          const newTab = window.open();
+                          newTab.opener = null;
+                          newTab.location.href = this.form[dataIndex];
+                        },
+                      }}
+                    >
+                      下载
+                    </el-button>
+                  );
+                } else if (valueType === "img") {
+                  return this.form[dataIndex] ? (
+                    <el-image
+                      style="width: 100px; height: 100px"
+                      src={this.form[dataIndex]}
+                      preview-src-list={[this.form[dataIndex]]}
+                    ></el-image>
+                  ) : (
+                    "-"
+                  );
+                }
+                return this.form[dataIndex] === null ||
+                  this.form[dataIndex] === undefined
+                  ? "-"
+                  : this.form[dataIndex];
+              }
+            })()}
       </el-form-item>
     );
   },

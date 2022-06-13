@@ -166,7 +166,7 @@ export default {
           // init
           this.paginationAttr = this.pagination.props;
           this.columns.forEach((item) => {
-            if (!item.hideInSearch) {
+            if (!item.hideInForm) {
               // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
               this.$set(
                 this.form,
@@ -198,7 +198,7 @@ export default {
             default: (scoped) => (
               <label>
                 {this.columns
-                  .filter((item) => !item.hideInSearch)
+                  .filter((item) => !item.hideInForm)
                   .map((item, idx) => (
                     <Json2FormItem
                       props={{ model: this.form, item }}

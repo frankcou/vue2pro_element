@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-13 10:25:48
+ * @LastEditTime: 2022-06-13 11:39:00
  * @LastEditors: zoufengfan
 -->
 
@@ -58,6 +58,7 @@ vue run serve
     title: 'th的内容/formitem的label文本',//必填
     dataIndex: 'key1',//必填,字段名
     valueType: 'select',//选填,默认input(后面见valueType配置)
+    editable: true,// 选填，默认true，false时仅显示字段内容
     initialValue: 1111,//选填,form对应字段的初始值
     fieldProps: {//选填,input,select等表单输入组件的属性,支持(form)=>FieldProps类型
       maxlength: 6,
@@ -87,8 +88,8 @@ vue run serve
     },
     //选填,select组件中el-options的配置无需自己循环,支持(form)=>Options类型
     options: [
-      {label:'选项1',value:1},//非分组
-      {label:'分组1',options:[{label:'选项1',value:1}]},//分组
+      {label:'选项1',value:1},//非分组的写法
+      {label:'分组1',options:[{label:'选项1',value:1}]},//分组的写法
       ],
     fieldRender: (form) => {//选填,表单输入组件的自定义
       return (
@@ -102,10 +103,10 @@ vue run serve
       );
     },
     tableColumnProps: {},//选填,tableColumn属性
-    columnRender: (h, scoped) => {//选填,column内容的自定义
+    dataRender: ( scoped) => {//选填,tableColumn/表单（editable === false时）内容的自定义
       return <p>{scoped.row.xxxx}{scoped.$index}</p>;
     },
-    hideInSearch: true,//选填,默认false
+    hideInForm: true,//选填,默认false
     hideInTable: true,//选填,默认false
   }
 ```
@@ -123,5 +124,5 @@ vue run serve
 - radio
 - checkbox
 - transfer
-- file(待完善)
-- img(待完善)
+- file(待完善,暂时没有录入功能)
+- img(待完善,暂时没有录入功能)

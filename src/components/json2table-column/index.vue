@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-10 10:23:16
+ * @LastEditTime: 2022-06-13 10:57:31
  * @LastEditors: zoufengfan
 -->
 
@@ -36,8 +36,8 @@ export default {
         attrs={item.tableColumnProps}
         scopedSlots={{
           default: (scope) =>
-            item.columnRender
-              ? item.columnRender(h, scope)
+            item.dataRender
+              ? item.dataRender(scope)
               : scope.row[item.dataIndex],
         }}
       ></el-table-column>
