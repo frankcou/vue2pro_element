@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-10 18:06:54
+ * @LastEditTime: 2022-06-13 10:13:05
  * @LastEditors: zoufengfan
 -->
 
@@ -62,6 +62,7 @@ export default {
       }
       return map;
     };
+
     return (
       <el-form-item
         label={this.item.title}
@@ -80,6 +81,45 @@ export default {
               on: getFieldEvents(),
               scopedSlots: getObj(this.item.scopedSlots),
             };
+
+            let options = getObj(this.item.options);
+
+            // select 的 options
+            let selectScopedSlots = () => {
+              // 分组的options
+              if (options[0].options) {
+                return {
+                  default: (
+                    <div>
+                      {options.map((group) => (
+                        <el-option-group key={group.label} label={group.label}>
+                          <el-option
+                            key={item.value}
+                            label={item.label}
+                            value={item.value}
+                          ></el-option>
+                        </el-option-group>
+                      ))}
+                    </div>
+                  ),
+                };
+              }
+              // 非分组的options
+              return {
+                default: (
+                  <div>
+                    {options.map((item) => (
+                      <el-option
+                        key={item.value}
+                        label={item.label}
+                        value={item.value}
+                      ></el-option>
+                    ))}
+                  </div>
+                ),
+              };
+            };
+
             return (
               <div>
                 {(!this.item.valueType || this.item.valueType === "input") && (
@@ -89,7 +129,7 @@ export default {
                   <el-input-number {...p}></el-input-number>
                 )}
                 {this.item.valueType === "select" && (
-                  <el-select {...p}></el-select>
+                  <el-select scopedSlots={selectScopedSlots} {...p}></el-select>
                 )}
                 {this.item.valueType === "cascader" && (
                   <el-cascader {...p}></el-cascader>
@@ -116,10 +156,10 @@ export default {
                   <el-transfer {...p}></el-transfer>
                 )}
                 {/*  {this.item.valueType === 'file' && (
-                      <el-select 
+                      <el-select
                       ></el-select>
                     )}{this.item.valueType === 'img' && (
-                      <el-select 
+                      <el-select
                       ></el-select>
                     )} */}
               </div>

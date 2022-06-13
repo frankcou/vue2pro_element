@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-10 18:07:33
+ * @LastEditTime: 2022-06-13 10:18:14
  * @LastEditors: zoufengfan
 -->
 
@@ -53,7 +53,7 @@ jsx-vue2 的使用方法[https://github.com/vuejs/jsx-vue2]
 
 **pro-table** 的 **columns** 数组单个对象配置/**json2form-item** 的 **item** 配置/**json2table-column** 的 **item** 配置
 
-```js
+```jsx
 {
     title: 'th的内容/formitem的label文本',//必填
     dataIndex: 'key1',//必填,字段名
@@ -85,6 +85,11 @@ jsx-vue2 的使用方法[https://github.com/vuejs/jsx-vue2]
         </div>
       ),
     },
+    //选填,select组件中el-options的配置无需自己循环,支持(form)=>Options类型
+    options: [
+      {label:'选项1'，value:1},//非分组
+      {label:'分组1',options:[{label:'选项1'，value:1}]},//分组
+      ],
     fieldRender: (form) => {//选填,表单输入组件的自定义
       return (
         <el-input vModel={form.xxxx}>
