@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-13 10:20:32
+ * @LastEditTime: 2022-06-13 10:25:48
  * @LastEditors: zoufengfan
 -->
 
@@ -34,7 +34,7 @@ vue run serve
 
 ## 项目用到 jsx, elementUI
 
-jsx-vue2 的使用方法[https://github.com/vuejs/jsx-vue2]
+[jsx-vue2 的使用方法](!https://github.com/vuejs/jsx-vue2)
 
 ## pro-table
 
