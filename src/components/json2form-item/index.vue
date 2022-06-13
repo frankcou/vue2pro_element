@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-13 16:23:05
+ * @LastEditTime: 2022-06-13 17:11:21
  * @LastEditors: zoufengfan
 -->
 
@@ -68,14 +68,6 @@ export default {
       return map;
     };
 
-    const styles = () => {
-      let styleMap = {};
-      if (this.item.colSize) {
-        styleMap.width = (this.item.colSize / 24) * 100 + "%";
-      }
-      return styleMap;
-    };
-
     return (
       <el-form-item
         label={this.item.title}
@@ -85,7 +77,6 @@ export default {
           required:
             editable && formItemProps && (formItemProps.required || false),
         }}
-        style={styles()}
       >
         {editable
           ? // 编辑模式

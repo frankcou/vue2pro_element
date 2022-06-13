@@ -1,17 +1,41 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-13 14:09:11
+ * @LastEditTime: 2022-06-13 17:23:31
  * @LastEditors: zoufengfan
 -->
 <template>
-  <el-form ref="form" :model="model" v-loading="loading">
-    <json2form-item
-      v-for="item in columns"
-      :key="item.dataIndex"
-      :model="model"
-      :item="{ ...item, editable: item.editable || editable }"
-    ></json2form-item>
+  <el-form
+    class="pro-form"
+    ref="form"
+    v-loading="loading"
+    v-bind="$attrs"
+    v-on="$listeners"
+    :model="model"
+    :inline="isInline"
+  >
+    <template v-if="!isInline">
+      <json2form-item
+        v-for="item in columns"
+        :key="item.dataIndex"
+        :model="model"
+        :item="{ ...item, editable: item.editable || editable }"
+      ></json2form-item>
+    </template>
+    <template v-else>
+      <el-row :gutter="10">
+        <el-col
+          v-for="item in columns"
+          :key="item.dataIndex"
+          v-bind="item.colProps || { span: 12 }"
+        >
+          <json2form-item
+            :model="model"
+            :item="{ ...item, editable: item.editable || editable }"
+          ></json2form-item>
+        </el-col>
+      </el-row>
+    </template>
   </el-form>
 </template>
 
@@ -36,6 +60,12 @@ export default {
     return {
       model: {},
     };
+  },
+  computed: {
+    isInline() {
+      if (this.$attrs.inline === undefined) return true;
+      return this.$attrs.inline;
+    },
   },
   watch: {
     loading: {

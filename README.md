@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-13 16:35:27
+ * @LastEditTime: 2022-06-13 17:24:54
  * @LastEditors: zoufengfan
 -->
 
@@ -109,6 +109,7 @@ vue run serve
     },
     hideInForm: true,//选填,默认false
     hideInTable: true,//选填,默认false
+    colProps: { span: 12 } //选填，el-col的组件属性，默认{ span: 12 }
   }
 ```
 
