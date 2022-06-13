@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-13 10:18:14
+ * @LastEditTime: 2022-06-13 10:20:32
  * @LastEditors: zoufengfan
 -->
 
@@ -87,8 +87,8 @@ jsx-vue2 的使用方法[https://github.com/vuejs/jsx-vue2]
     },
     //选填,select组件中el-options的配置无需自己循环,支持(form)=>Options类型
     options: [
-      {label:'选项1'，value:1},//非分组
-      {label:'分组1',options:[{label:'选项1'，value:1}]},//分组
+      {label:'选项1',value:1},//非分组
+      {label:'分组1',options:[{label:'选项1',value:1}]},//分组
       ],
     fieldRender: (form) => {//选填,表单输入组件的自定义
       return (
