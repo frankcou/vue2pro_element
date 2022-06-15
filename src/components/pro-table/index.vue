@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-13 17:28:08
+ * @LastEditTime: 2022-06-15 11:17:05
  * @LastEditors: zoufengfan
 -->
 
@@ -16,6 +16,9 @@ export default {
     SearchBar,
   },
   props: {
+    height: {
+      type: String,
+    },
     //   搜索框内的loading,searchbar的表单初始化信号
     searchBarLoading: {
       type: Boolean,
@@ -57,7 +60,6 @@ export default {
         props: {
           border: true,
           size: "medium",
-          height: "100%",
         },
       }),
     },
@@ -184,7 +186,18 @@ export default {
     // console.log("pro-table渲染视图");
 
     return (
-      <div class="pro_table">
+      <div
+        class="pro_table"
+        style={
+          this.height
+            ? {
+                display: "flex",
+                "flex-direction": "column",
+                height: this.height,
+              }
+            : {}
+        }
+      >
         {/* 搜索部分 */}
         <search-bar
           loading={this.searchBarLoading}
@@ -218,7 +231,11 @@ export default {
           ref="table"
           vLoading={this.tableLoading}
           data={this.pageResult.content}
-          props={{ ...this.table.props, ...this.table.methods }}
+          props={{
+            ...this.table.props,
+            height: this.height ? "100%" : "",
+            ...this.table.methods,
+          }}
           on={this.table.event}
         >
           {this.columns
@@ -247,12 +264,6 @@ export default {
 
 <style lang="scss" scoped>
 .pro_table {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  ::v-deep .el-table {
-    flex: 1;
-  }
   ::v-deep .pro_table-pagination {
     padding: 15px 0;
     text-align: center;

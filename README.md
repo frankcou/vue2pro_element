@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-15 09:49:46
+ * @LastEditTime: 2022-06-15 11:16:06
  * @LastEditors: zoufengfan
 -->
 
@@ -52,6 +52,7 @@ vue run serve
 | listPms          | 列表请求                                                                        | ():Promise\<any\>=>({code: number,data: {content: [{}],totalSize: number},msg: string}) | -                                                                                                          | 必填      |
 | columns          | 表格/表单配置                                                                   | Column \| Item (见下方)                                                                 | -                                                                                                          | 必填      |
 | searchBarLoading | 搜索框内的 loading,searchbar 的表单初始化信号，异步获得 initialValue 的时候需要 | Boolean                                                                                 | false                                                                                                      | 可选      |
+| height           | 整个 protable 的高度                                                            | String                                                                                  | -                                                                                                          | 可选      |
 | canSearch        | 是否可以查询，相当于查询钩子                                                    | (form) => Boolean                                                                       | (form) => true                                                                                             | 可选      |
 | table            | el-table 的相关配置                                                             | Object                                                                                  | {props: {border: true,size: "medium",height: "100%",}\}                                                    | 可选      |
 | pagination       | el-pagination 的相关配置                                                        | Object                                                                                  | { props: {pageSize: 10,pageSizes: [10, 50, 100, 200],layout: "total, sizes, prev, pager, next, jumper",}\} | 可选      |
