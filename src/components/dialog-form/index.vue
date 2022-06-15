@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-15 15:27:11
+ * @LastEditTime: 2022-06-15 15:43:45
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -19,16 +19,23 @@
       :loading="loading"
     ></pro-form>
 
-    <slot name="footer">
-      <div slot="footer" v-if="editable">
-        <el-button @click="handleClose" :disabled="btnLoading">{{
-          closeText
-        }}</el-button>
-        <el-button type="primary" @click="handleSubmit" :loading="btnLoading">{{
-          okText
-        }}</el-button>
-      </div>
-    </slot>
+    <div slot="footer" v-if="$slots.footer && $slots.footer.length">
+      <slot name="footer">
+        <el-button
+          v-if="editable"
+          @click="handleClose"
+          :disabled="btnLoading"
+          >{{ closeText }}</el-button
+        >
+        <el-button
+          v-if="editable"
+          type="primary"
+          @click="handleSubmit"
+          :loading="btnLoading"
+          >{{ okText }}</el-button
+        >
+      </slot>
+    </div>
   </el-dialog>
 </template>
 

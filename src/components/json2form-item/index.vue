@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-13 17:11:21
+ * @LastEditTime: 2022-06-15 15:35:50
  * @LastEditors: zoufengfan
 -->
 
@@ -70,7 +70,7 @@ export default {
 
     return (
       <el-form-item
-        label={this.item.title}
+        label={this.item.title + (editable ? "" : ": ")}
         props={{
           prop: dataIndex,
           ...formItemProps,

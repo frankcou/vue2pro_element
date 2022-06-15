@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:07:51
- * @LastEditTime: 2022-06-15 15:21:37
+ * @LastEditTime: 2022-06-15 15:46:16
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -23,7 +23,8 @@
       :formProps="{
         editable: false,
       }"
-    ></dialog-form>
+    >
+    </dialog-form>
   </div>
 </template>
 
