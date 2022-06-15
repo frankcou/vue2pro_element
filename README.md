@@ -32,10 +32,10 @@
 
 ## 组件及相关文档
 
-- [!pro-form](./src/components/pro-form/README.md)
-- [!pro-table](./src/components/pro-table/README.md)
-- [!dialog-form](./src/components/dialog-form/README.md)
-- [!字段配置](./src/components/ItemConfig.md)
+- [pro-form](./src/components/pro-form/README.md)
+- [pro-table](./src/components/pro-table/README.md)
+- [dialog-form](./src/components/dialog-form/README.md)
+- [字段配置](./src/components/ItemConfig.md)
 
 ## 所有示例
 
