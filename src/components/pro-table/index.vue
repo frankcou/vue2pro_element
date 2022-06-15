@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-15 13:23:53
+ * @LastEditTime: 2022-06-15 15:55:24
  * @LastEditors: zoufengfan
 -->
 
@@ -151,6 +151,7 @@ export default {
     },
     handleSizeChange(val) {
       this.paginationAttr.pageSize = val;
+      this.currentPage = 1;
       this.findPage();
     },
     handleCurrentChange(val) {
