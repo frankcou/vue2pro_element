@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-15 11:17:05
+ * @LastEditTime: 2022-06-15 13:23:53
  * @LastEditors: zoufengfan
 -->
 
@@ -195,7 +195,7 @@ export default {
                 "flex-direction": "column",
                 height: this.height,
               }
-            : {}
+            : undefined
         }
       >
         {/* 搜索部分 */}
@@ -233,7 +233,7 @@ export default {
           data={this.pageResult.content}
           props={{
             ...this.table.props,
-            height: this.height ? "100%" : "",
+            height: this.height ? "100%" : undefined,
             ...this.table.methods,
           }}
           on={this.table.event}
