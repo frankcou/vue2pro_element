@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-15 10:45:33
+ * @LastEditTime: 2022-06-15 17:01:43
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -65,6 +65,20 @@ export default {
     isInline() {
       if (this.$attrs.inline === undefined) return true;
       return this.$attrs.inline;
+    },
+  },
+  methods: {
+    validate(fn) {
+      this.$refs["form"].validate(fn);
+    },
+    validateField(fn) {
+      this.$refs["form"].validateField(fn);
+    },
+    resetFields() {
+      this.$refs["form"].resetFields();
+    },
+    clearValidate(fn) {
+      this.$refs["form"].clearValidate(fn);
     },
   },
   watch: {
