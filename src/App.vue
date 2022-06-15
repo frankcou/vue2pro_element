@@ -1,22 +1,29 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:07:51
- * @LastEditTime: 2022-06-13 17:26:35
+ * @LastEditTime: 2022-06-15 15:21:37
  * @LastEditors: zoufengfan
 -->
 <template>
   <div id="app">
     <h3>table</h3>
-    <pro-table
-      style="height: auto"
-      ref="protable"
-      :columns="columns"
-      :listPms="findPage"
-    >
+    <pro-table ref="protable" :columns="columns" :listPms="findPage">
     </pro-table>
+
     <h3>form表单</h3>
-    <!-- :editable="false" -->
     <pro-form :columns="columns" label-position="left"></pro-form>
+
+    <el-button @click="visible = true">打开form</el-button>
+
+    <dialog-form
+      title="dialog form"
+      v-model="visible"
+      :columns="columns"
+      :onFinish="handleSubmit"
+      :formProps="{
+        editable: false,
+      }"
+    ></dialog-form>
   </div>
 </template>
 
@@ -25,12 +32,13 @@ export default {
   name: "App",
   data() {
     return {
+      visible: false,
       columns: [
         {
           // colProps: { span: 12 },
           title: "title1",
           dataIndex: "a",
-          formItemProps: { required: true },
+          // formItemProps: { required: true },
         },
         {
           // colProps: { span: 12 },
@@ -84,6 +92,16 @@ export default {
         }, 1000);
       });
     },
+
+    handleSubmit(obj) {
+      console.log(JSON.stringify(obj));
+      return new Promise((res, rej) => {
+        setTimeout(() => {
+          console.log("submited");
+          res(false);
+        }, 1000);
+      });
+    },
   },
   mounted() {
     this.$refs["protable"].handleSearch();
@@ -97,5 +115,6 @@ body,
 #app {
   height: 100%;
   margin: 0;
+  overflow: auto;
 }
 </style>
