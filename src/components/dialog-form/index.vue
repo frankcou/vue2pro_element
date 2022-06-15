@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-15 15:43:45
+ * @LastEditTime: 2022-06-15 17:04:39
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     init() {
-      this.$refs["proform"].$refs["form"].resetFields();
+      this.$refs["proform"].resetFields();
       Object.assign(this.$data, this.$options.data(this));
     },
     handleClose() {
@@ -107,7 +107,7 @@ export default {
     handleSubmit() {
       this.btnLoading = true;
       const form = this.$refs["proform"];
-      form.$refs["form"].validate((_bool, obj) => {
+      form.validate((_bool, obj) => {
         if (_bool) {
           this.$confirm("确认提交？")
             .then((_) => {

@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-15 15:55:24
+ * @LastEditTime: 2022-06-15 16:41:06
  * @LastEditors: zoufengfan
 -->
 
@@ -107,7 +107,7 @@ export default {
   },
   methods: {
     //   点击搜索框
-    handleSearch(e) {
+    handleSearch() {
       if (!this.canSearch(this.form)) return;
       this.findPage();
       this.$emit("search");
