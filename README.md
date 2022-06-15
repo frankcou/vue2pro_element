@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-15 09:46:00
+ * @LastEditTime: 2022-06-15 09:49:46
  * @LastEditors: zoufengfan
 -->
 
@@ -41,6 +41,9 @@ vue run serve
 [jsx-vue2 的使用方法](!https://github.com/vuejs/jsx-vue2)
 
 ## pro-table
+
+> 第一次列表查询需要手动触发
+> `this.$refs["protable"].handleSearch();`
 
 ### Props
 
