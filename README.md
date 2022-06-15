@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-13 17:24:54
+ * @LastEditTime: 2022-06-15 09:46:00
  * @LastEditors: zoufengfan
 -->
 
@@ -25,6 +25,10 @@
   Vue.use(ElementUI, { size: "small" });
   Vue.use(ProTable);
   ```
+
+## 使用示例
+
+[查看](./src/App.vue)
 
 ## 项目运行/开发
 
