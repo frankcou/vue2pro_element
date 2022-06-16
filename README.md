@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-16 15:17:07
+ * @LastEditTime: 2022-06-16 15:24:29
  * @LastEditors: zoufengfan
 -->
 
@@ -105,6 +105,8 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props vue2pro_
 [jsx-vue2 的使用方法](https://github.com/vuejs/jsx-vue2)
 
 ## 相关组件及文档
+
+文档地址：https://gitee.com/frankchou1/vue2pro-element/tree/master
 
 - [pro-form](./src/components/pro-form/README.md)
 - [pro-table](./src/components/pro-table/README.md)
