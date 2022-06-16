@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-16 14:16:51
+ * @LastEditTime: 2022-06-16 15:17:07
  * @LastEditors: zoufengfan
 -->
 
@@ -12,7 +12,7 @@
 ## 安装与使用
 
 ```
-npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props -D
+npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props vue2pro_element
 ```
 
 - babel.config.js:
@@ -32,11 +32,79 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props -D
   Vue.use(ProTable);
   ```
 
+- somecomponent.vue(基础 pro-table 演示)
+  ```vue
+  <template>
+    <pro-table ref="protable" :columns="columns" :listPms="findPage">
+    </pro-table>
+  </template>
+  <script>
+  export default {
+    columns: [{
+          title: "title1",
+          dataIndex: "a",
+          formItemProps: { required: true },
+        },
+        {
+          title: "title2",
+          dataIndex: "b",
+          valueType: "select",
+          initialValue: 1,
+          options: [
+            { label: "options1", value: 1 },
+            { label: "options2", value: 2 },
+          ],
+        },
+        {
+          title: "title1",
+          dataIndex: "c",
+          valueType: "img",
+          initialValue:
+            "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/vue/vue.png",
+        },
+      ],
+      methods: {
+        findPage() {
+      return new Promise((res) => {
+        setTimeout(() => {
+          res({
+            code: 200,
+            data: {
+              content: [
+                {
+                  a: "a value1",
+                  b: 2,
+                  c: "b value1",
+                },
+                {
+                  a: "a value2",
+                  b: "b value2",
+                  c: "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/vue/vue.png",
+                },
+                {
+                  a: "a value2",
+                  c: "",
+                },
+              ],
+              totalSize: 222,
+            },
+            msg: "msg",
+          });
+        }, 1000);
+      });
+      }
+  },
+  mounted(){
+    this.$refs["protable"].handleSearch();
+  }
+  </script>
+  ```
+
 ## 项目用到 jsx, elementUI
 
 [jsx-vue2 的使用方法](https://github.com/vuejs/jsx-vue2)
 
-## 组件及相关文档
+## 相关组件及文档
 
 - [pro-form](./src/components/pro-form/README.md)
 - [pro-table](./src/components/pro-table/README.md)
@@ -50,5 +118,7 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props -D
 ## 项目运行/开发
 
 ```
+
 vue run serve
+
 ```
