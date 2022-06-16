@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-15 16:41:06
+ * @LastEditTime: 2022-06-16 10:10:10
  * @LastEditors: zoufengfan
 -->
 
@@ -53,26 +53,24 @@ export default {
       default: (form) => true,
     },
     // ========= el-table组件相关,与文档一样 ==========
-    table: {
+    tableProps: {
       type: Object,
       required: false,
       default: () => ({
-        props: {
-          border: true,
-          size: "medium",
-        },
+        border: true,
+        size: "medium",
+        on: {},
       }),
     },
     // ========= el-pagination组件相关,与文档一样 ==========
-    pagination: {
+    paginationProps: {
       type: Object,
       required: false,
       default: () => ({
-        props: {
-          pageSize: 10,
-          pageSizes: [10, 50, 100, 200],
-          layout: "total, sizes, prev, pager, next, jumper",
-        },
+        pageSize: 10,
+        pageSizes: [10, 50, 100, 200],
+        layout: "total, sizes, prev, pager, next, jumper",
+        on: {},
       }),
     },
   },
@@ -167,7 +165,7 @@ export default {
         if (!val) {
           // console.log("init columns");
           // init
-          this.paginationAttr = this.pagination.props;
+          this.paginationAttr = this.paginationProps;
           this.columns.forEach((item) => {
             if (!item.hideInForm) {
               // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
@@ -233,11 +231,11 @@ export default {
           vLoading={this.tableLoading}
           data={this.pageResult.content}
           props={{
-            ...this.table.props,
+            ...this.tableProps,
             height: this.height ? "100%" : undefined,
-            ...this.table.methods,
+            ...this.tableProps,
           }}
-          on={this.table.event}
+          on={this.tableProps && this.tableProps.on}
         >
           {this.columns
             .filter((item) => !item.hideInTable)
@@ -250,8 +248,8 @@ export default {
         <el-pagination
           ref="pagination"
           class="pro_table-pagination"
-          props={{ ...this.paginationAttr, ...this.pagination.methods }}
-          on={this.pagination.event}
+          props={{ ...this.paginationProps, ...this.paginationAttr }}
+          on={this.paginationProps && this.paginationProps.on}
           vOn:size-change={this.handleSizeChange}
           vOn:current-change={this.handleCurrentChange}
           current-page={this.currentPage}

@@ -1,13 +1,14 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-15 17:04:39
+ * @LastEditTime: 2022-06-16 10:09:22
  * @LastEditors: zoufengfan
 -->
 <template>
   <el-dialog
     :title="title"
     v-bind="dialogProps"
+    v-on="dialogProps && dialogProps.on"
     :visible.sync="isVisible"
     v-loading="loading"
     :before-close="handleClose"
@@ -16,6 +17,7 @@
       ref="proform"
       :columns="columns"
       v-bind="formProps"
+      v-on="formProps && formProps.on"
       :loading="loading"
     ></pro-form>
 
