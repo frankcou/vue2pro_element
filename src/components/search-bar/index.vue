@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-02-22 17:10:39
- * @LastEditTime: 2022-06-10 13:38:31
+ * @LastEditTime: 2022-06-16 14:21:08
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -51,17 +51,16 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .search-bar {
   padding: 10px 15px;
 }
-$bottom: 10px;
 ::v-deep .el-form-item {
-  margin-bottom: $bottom;
+  margin-bottom: 10px;
 }
 .search-btns {
   display: inline-block;
-  margin-bottom: $bottom;
+  margin-bottom: 10px;
   line-height: 32px;
 }
 </style>

@@ -1,13 +1,19 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-15 17:17:52
+ * @LastEditTime: 2022-06-16 14:16:51
  * @LastEditors: zoufengfan
 -->
 
 # vue2pro_element
 
-## 项目配置
+> 支持 jsx 的 table/form-item/table-column 封装,可通过 json 全部一次性生成
+
+## 安装与使用
+
+```
+npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props -D
+```
 
 - babel.config.js:
   ```js
@@ -28,7 +34,7 @@
 
 ## 项目用到 jsx, elementUI
 
-[jsx-vue2 的使用方法](!https://github.com/vuejs/jsx-vue2)
+[jsx-vue2 的使用方法](https://github.com/vuejs/jsx-vue2)
 
 ## 组件及相关文档
 

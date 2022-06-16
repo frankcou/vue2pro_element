@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-15 17:21:32
+ * @LastEditTime: 2022-06-16 14:19:07
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -104,4 +104,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>

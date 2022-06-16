@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-16 10:10:10
+ * @LastEditTime: 2022-06-16 14:20:38
  * @LastEditors: zoufengfan
 -->
 
@@ -261,11 +261,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.pro_table {
-  ::v-deep .pro_table-pagination {
-    padding: 15px 0;
-    text-align: center;
-  }
+<style scoped>
+::v-deep .pro_table-pagination {
+  padding: 15px 0;
+  text-align: center;
 }
 </style>

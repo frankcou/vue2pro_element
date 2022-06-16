@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-16 10:09:22
+ * @LastEditTime: 2022-06-16 14:20:05
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -138,7 +138,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 ::v-deep .el-dialog {
   min-width: 850px;
 }
