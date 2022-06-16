@@ -1,6 +1,6 @@
 {
   "name": "vue2pro_element",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "支持jsx的table/form-item/table-column封装,可通过json全部生成",
   "private": false,
   "scripts": {

@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-16 15:24:29
+ * @LastEditTime: 2022-06-16 15:28:53
  * @LastEditors: zoufengfan
 -->
 
@@ -59,8 +59,7 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props vue2pro_
           title: "title1",
           dataIndex: "c",
           valueType: "img",
-          initialValue:
-            "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/vue/vue.png",
+          hideInForm: true
         },
       ],
       methods: {
@@ -74,7 +73,7 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props vue2pro_
                 {
                   a: "a value1",
                   b: 2,
-                  c: "b value1",
+                  c: "c value1",
                 },
                 {
                   a: "a value2",
@@ -82,7 +81,8 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props vue2pro_
                   c: "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/vue/vue.png",
                 },
                 {
-                  a: "a value2",
+                  a: "a value3",
+                  b: "",
                   c: "",
                 },
               ],
