@@ -1,11 +1,11 @@
 {
   "name": "vue2pro_element",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "支持jsx的table/form封装,可通过json全部生成",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "togithub": "git push github master"
+    "pub": "git push github master && npm publish"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -17,7 +17,9 @@
     "json",
     "jsx",
     "vue2",
+    "vue2jsx",
     "elementUI",
+    "pro-element",
     "pro-elementui",
     "pro-table",
     "pro-form"
