@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 16:37:32
- * @LastEditTime: 2022-06-15 16:37:35
+ * @LastEditTime: 2022-06-20 14:27:43
  * @LastEditors: zoufengfan
 -->
 
@@ -48,15 +48,17 @@
       {label:'选项1',value:1},//非分组的写法
       {label:'分组1',options:[{label:'选项1',value:1}]},//分组的写法
       ],
-    fieldRender: (form) => {//选填,表单输入组件的自定义
+    formItemRender: (form) => {//选填,表单输入组件的自定义
       return (
-        <el-input vModel={form.xxxx}>
-          <i
-            slot="prefix"
-            class="el-input__icon el-icon-search aaaaaa"
-            vOn:click={this.aaa}
-          ></i>
-        </el-input>
+        <el-form-item label="label文本">
+          <el-input vModel={form.xxxx}>
+            <i
+              slot="prefix"
+              class="el-input__icon el-icon-search aaaaaa"
+              vOn:click={this.aaa}
+            ></i>
+          </el-input>
+        </el-form-item>
       );
     },
     tableColumnProps: {},//选填,tableColumn属性

@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-15 15:35:50
+ * @LastEditTime: 2022-06-20 14:30:09
  * @LastEditors: zoufengfan
 -->
 
@@ -68,6 +68,10 @@ export default {
       return map;
     };
 
+    // 完全自定义，为了方便定义多维数据
+    if (editable && this.item.formItemRender)
+      return this.item.formItemRender(this.form);
+
     return (
       <el-form-item
         label={this.item.title + (editable ? "" : ": ")}
@@ -81,86 +85,79 @@ export default {
         {editable
           ? // 编辑模式
             (() => {
-              if (this.item.fieldRender) {
-                return this.item.fieldRender(this.form);
-              } else {
-                let p = {
-                  attrs: fieldProps,
-                  props: {
-                    value: this.form[dataIndex],
-                    ...fieldProps,
-                  },
-                  on: getFieldEvents(),
-                  scopedSlots: getObj(this.item.scopedSlots),
-                };
-                // select 的 options
-                let selectOptions = () => {
-                  // 分组的options
-                  if (options[0] && options[0].value === undefined) {
-                    return (
-                      <div>
-                        {options.map((group) => (
-                          <el-option-group key={group.label} props={group}>
-                            <el-option
-                              key={item.value}
-                              props={item}
-                            ></el-option>
-                          </el-option-group>
-                        ))}
-                      </div>
-                    );
-                  }
-                  // 非分组的options
+              let p = {
+                attrs: fieldProps,
+                props: {
+                  value: this.form[dataIndex],
+                  ...fieldProps,
+                },
+                on: getFieldEvents(),
+                scopedSlots: getObj(this.item.scopedSlots),
+              };
+              // select 的 options
+              let selectOptions = () => {
+                // 分组的options
+                if (options[0] && options[0].value === undefined) {
                   return (
                     <div>
-                      {options.map((item) => (
-                        <el-option key={item.value} props={item}></el-option>
+                      {options.map((group) => (
+                        <el-option-group key={group.label} props={group}>
+                          <el-option key={item.value} props={item}></el-option>
+                        </el-option-group>
                       ))}
                     </div>
                   );
-                };
-
+                }
+                // 非分组的options
                 return (
                   <div>
-                    {(!valueType || valueType === "input") && (
-                      <el-input {...p}></el-input>
-                    )}
-                    {valueType === "input-number" && (
-                      <el-input-number {...p}></el-input-number>
-                    )}
-                    {valueType === "select" && (
-                      <el-select {...p}>{selectOptions()}</el-select>
-                    )}
-                    {valueType === "cascader" && (
-                      <el-cascader {...p}></el-cascader>
-                    )}
-                    {valueType === "switch" && <el-switch {...p}></el-switch>}
-                    {valueType === "time-select" && (
-                      <el-time-select {...p}></el-time-select>
-                    )}
-                    {valueType === "date-picker" && (
-                      <el-date-picker {...p}></el-date-picker>
-                    )}
-                    {valueType === "date-time-picker" && (
-                      <el-date-picker {...p}></el-date-picker>
-                    )}
-                    {valueType === "radio" && <el-radio {...p}></el-radio>}
-                    {valueType === "checkbox" && (
-                      <el-checkbox {...p}></el-checkbox>
-                    )}
-                    {valueType === "transfer" && (
-                      <el-transfer {...p}></el-transfer>
-                    )}
-                    {/*  {valueType === 'file' && (
+                    {options.map((item) => (
+                      <el-option key={item.value} props={item}></el-option>
+                    ))}
+                  </div>
+                );
+              };
+
+              return (
+                <div>
+                  {(!valueType || valueType === "input") && (
+                    <el-input {...p}></el-input>
+                  )}
+                  {valueType === "input-number" && (
+                    <el-input-number {...p}></el-input-number>
+                  )}
+                  {valueType === "select" && (
+                    <el-select {...p}>{selectOptions()}</el-select>
+                  )}
+                  {valueType === "cascader" && (
+                    <el-cascader {...p}></el-cascader>
+                  )}
+                  {valueType === "switch" && <el-switch {...p}></el-switch>}
+                  {valueType === "time-select" && (
+                    <el-time-select {...p}></el-time-select>
+                  )}
+                  {valueType === "date-picker" && (
+                    <el-date-picker {...p}></el-date-picker>
+                  )}
+                  {valueType === "date-time-picker" && (
+                    <el-date-picker {...p}></el-date-picker>
+                  )}
+                  {valueType === "radio" && <el-radio {...p}></el-radio>}
+                  {valueType === "checkbox" && (
+                    <el-checkbox {...p}></el-checkbox>
+                  )}
+                  {valueType === "transfer" && (
+                    <el-transfer {...p}></el-transfer>
+                  )}
+                  {/*  {valueType === 'file' && (
                       <el-select
                       ></el-select>
                     )}{valueType === 'img' && (
                       <el-select
                       ></el-select>
                     )} */}
-                  </div>
-                );
-              }
+                </div>
+              );
             })()
           : // 阅读模式
             (() => {
