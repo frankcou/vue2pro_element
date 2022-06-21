@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-16 14:19:07
+ * @LastEditTime: 2022-06-21 13:36:18
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -23,7 +23,12 @@
       ></json2form-item>
     </template>
     <template v-else>
-      <el-row :gutter="10" style="margin-left: 0; margin-right: 0">
+      <el-row
+        type="flex"
+        align="top"
+        :gutter="10"
+        style="margin-left: 0; margin-right: 0"
+      >
         <el-col
           v-for="item in columns"
           :key="item.dataIndex"
