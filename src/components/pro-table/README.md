@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 16:31:15
- * @LastEditTime: 2022-06-16 10:39:57
+ * @LastEditTime: 2022-06-20 15:50:44
  * @LastEditors: zoufengfan
 -->
 
@@ -30,6 +30,21 @@
 | ------------ | ---------- | ---- |
 | handleSearch | 搜索的方法 | —    |
 | handleClear  | 重置的方法 | —    |
+
+## events
+
+| 字段名 | 描述 |
+| ------ | ---- |
+| search | 搜索 |
+| reset  | 重置 |
+
+# slots
+
+| 插槽名          | 描述         |
+| --------------- | ------------ |
+| tableTop        | 表格上方位置 |
+| searchBtns      | 搜索按钮位置 |
+| searchBarBottom | 搜索栏下方   |
 
 ## Refs
 
