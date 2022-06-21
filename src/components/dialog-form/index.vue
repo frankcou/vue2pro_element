@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-16 14:20:05
+ * @LastEditTime: 2022-06-21 11:14:43
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -59,10 +59,13 @@ export default {
       type: Function, //()=>Promise<boolean>
       default: (params) => true,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      loading: false,
       btnLoading: false,
     };
   },
