@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 16:37:32
- * @LastEditTime: 2022-06-20 14:27:43
+ * @LastEditTime: 2022-06-21 14:53:59
  * @LastEditors: zoufengfan
 -->
 
@@ -11,8 +11,8 @@
 
 ```jsx
 {
-    title: 'th的内容/formitem的label文本',//必填
-    dataIndex: 'key1',//必填,字段名
+    title: 'th的内容/formitem的label文本',//选填
+    dataIndex: 'key1',//选填,字段名
     valueType: 'select',//选填,默认input(后面见valueType配置)
     editable: true,// 选填，默认true，false时仅显示字段内容
     initialValue: 1111,//选填,form对应字段的初始值

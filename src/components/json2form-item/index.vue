@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-20 14:30:09
+ * @LastEditTime: 2022-06-21 14:57:14
  * @LastEditors: zoufengfan
 -->
 
@@ -37,6 +37,7 @@ export default {
       if (obj.constructor === Function) return obj(this.form);
     };
     const { dataIndex, valueType } = this.item;
+    const hideInForm = getObj(this.item.hideInForm);
     const fieldProps = getObj(this.item.fieldProps);
     const formItemProps = getObj(this.item.formItemProps);
     const editable =
@@ -72,7 +73,7 @@ export default {
     if (editable && this.item.formItemRender)
       return this.item.formItemRender(this.form);
 
-    return (
+    return !hideInForm ? (
       <el-form-item
         label={this.item.title + (editable ? "" : ": ")}
         props={{
@@ -216,6 +217,8 @@ export default {
               }
             })()}
       </el-form-item>
+    ) : (
+      ""
     );
   },
 };

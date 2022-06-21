@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-21 13:36:18
+ * @LastEditTime: 2022-06-21 14:53:12
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -94,7 +94,7 @@ export default {
           //   console.log("init pro-form");
           // init
           this.columns.forEach((item) => {
-            if (!item.hideInForm) {
+            if (item.dataIndex) {
               // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
               this.$set(
                 this.model,

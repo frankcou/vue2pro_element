@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-16 14:20:38
+ * @LastEditTime: 2022-06-21 14:49:10
  * @LastEditors: zoufengfan
 -->
 
@@ -96,6 +96,12 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.paginationAttr.pageSize,
       };
+      // 过滤
+      this.columns.forEach((item) => {
+        if (item.hideInForm) {
+          delete params.params[item.dataIndex];
+        }
+      });
       return this.transformParams ? this.transformParams(params) : params;
     },
     // table字段配置
@@ -167,7 +173,7 @@ export default {
           // init
           this.paginationAttr = this.paginationProps;
           this.columns.forEach((item) => {
-            if (!item.hideInForm) {
+            if (item.dataIndex) {
               // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
               this.$set(
                 this.form,
