@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-21 14:53:12
+ * @LastEditTime: 2022-06-21 18:02:14
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -18,7 +18,7 @@
       <json2form-item
         v-for="item in columns"
         :key="item.dataIndex"
-        :model="model"
+        v-model="model"
         :item="{ ...item, editable: item.editable || editable }"
       ></json2form-item>
     </template>
@@ -33,9 +33,10 @@
           v-for="item in columns"
           :key="item.dataIndex"
           v-bind="item.colProps || { span: 12 }"
+          v-show="!item.hideInForm"
         >
           <json2form-item
-            :model="model"
+            v-model="model"
             :item="{ ...item, editable: item.editable || editable }"
           ></json2form-item>
         </el-col>

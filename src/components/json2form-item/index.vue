@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-21 14:57:14
+ * @LastEditTime: 2022-06-21 18:10:25
  * @LastEditors: zoufengfan
 -->
 
@@ -14,8 +14,8 @@ export default {
       type: Object,
       required: true,
     },
-    // form数据存储对象
-    model: {
+    // 上一级数据存储对象
+    value: {
       required: true,
       type: Object,
     },
@@ -23,7 +23,7 @@ export default {
   computed: {
     form: {
       get() {
-        return this.model;
+        return this.value || {};
       },
       set(val) {
         this.$emit("input", val);
@@ -31,10 +31,10 @@ export default {
     },
   },
   render() {
-    const getObj = (obj) => {
+    const getObj = (obj, ...args) => {
       if (!obj) return obj;
       if (obj.constructor === Object || obj.constructor === Array) return obj;
-      if (obj.constructor === Function) return obj(this.form);
+      if (obj.constructor === Function) return obj(this.form, ...args);
     };
     const { dataIndex, valueType } = this.item;
     const hideInForm = getObj(this.item.hideInForm);
@@ -63,19 +63,23 @@ export default {
       };
       if (fieldProps && fieldProps.on) {
         for (const key in fieldProps.on) {
-          map[key] = (...e) => fieldProps.on[key](this.form, ...e);
+          map[key] = (...e) => fieldProps.on[key](...e);
         }
       }
       return map;
     };
 
+    // 完全不渲染
+    if (hideInForm) return "";
+
     // 完全自定义，为了方便定义多维数据
     if (editable && this.item.formItemRender)
       return this.item.formItemRender(this.form);
 
-    return !hideInForm ? (
+    // 正常情况
+    return (
       <el-form-item
-        label={this.item.title + (editable ? "" : ": ")}
+        label={this.item.title ? this.item.title + (editable ? "" : ": ") : ""}
         props={{
           prop: dataIndex,
           ...formItemProps,
@@ -157,6 +161,30 @@ export default {
                       <el-select
                       ></el-select>
                     )} */}
+
+                  {valueType === "group" &&
+                    (this.form[dataIndex] || []).map((row, idx) => {
+                      return (
+                        <div>
+                          {this.item.groupColumns.map((childItem) => (
+                            <json2form-item
+                              key={
+                                dataIndex +
+                                "-" +
+                                idx +
+                                "-" +
+                                childItem.dataIndex
+                              }
+                              vModel={row}
+                              item={{
+                                ...childItem,
+                                editable: childItem.editable || editable,
+                              }}
+                            ></json2form-item>
+                          ))}
+                        </div>
+                      );
+                    })}
                 </div>
               );
             })()
@@ -217,8 +245,6 @@ export default {
               }
             })()}
       </el-form-item>
-    ) : (
-      ""
     );
   },
 };
