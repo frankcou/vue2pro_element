@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-21 18:02:14
+ * @LastEditTime: 2022-06-23 14:26:23
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -24,7 +24,7 @@
     </template>
     <template v-else>
       <el-row
-        type="flex"
+        class="flex_wrap"
         align="top"
         :gutter="10"
         style="margin-left: 0; margin-right: 0"
@@ -110,3 +110,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.flex_wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+</style>
