@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-21 18:10:25
+ * @LastEditTime: 2022-06-23 15:13:45
  * @LastEditors: zoufengfan
 -->
 
@@ -16,7 +16,6 @@ export default {
     },
     // 上一级数据存储对象
     value: {
-      required: true,
       type: Object,
     },
   },
@@ -107,7 +106,10 @@ export default {
                     <div>
                       {options.map((group) => (
                         <el-option-group key={group.label} props={group}>
-                          <el-option key={item.value} props={item}></el-option>
+                          <el-option
+                            key={item.key || item.value}
+                            props={item}
+                          ></el-option>
                         </el-option-group>
                       ))}
                     </div>
@@ -117,7 +119,10 @@ export default {
                 return (
                   <div>
                     {options.map((item) => (
-                      <el-option key={item.value} props={item}></el-option>
+                      <el-option
+                        key={item.key || item.value}
+                        props={item}
+                      ></el-option>
                     ))}
                   </div>
                 );
