@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:07:51
- * @LastEditTime: 2022-06-16 09:38:51
+ * @LastEditTime: 2022-06-21 17:17:02
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -39,7 +39,15 @@ export default {
           // colProps: { span: 12 },
           title: "title1",
           dataIndex: "a",
-          // formItemProps: { required: true },
+          fieldProps: (form) => ({
+            on: {
+              change: (v) => {
+                console.log("form", form);
+                console.log("v", v);
+                form.someArr.push({ d: "d " + v.length, e: "e " + v.length });
+              },
+            },
+          }),
         },
         {
           // colProps: { span: 12 },
@@ -54,11 +62,29 @@ export default {
         },
         {
           // colProps: { span: 8 },
-          title: "title1",
+          title: "title img",
           dataIndex: "c",
           valueType: "img",
           initialValue:
             "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/vue/vue.png",
+          hideInForm: true,
+        },
+        {
+          colProps: { span: 24 },
+          title: "这是个数组对象",
+          dataIndex: "someArr",
+          valueType: "group",
+          initialValue: [],
+          groupColumns: [
+            {
+              title: "d title",
+              dataIndex: "d",
+            },
+            {
+              title: "e title",
+              dataIndex: "e",
+            },
+          ],
         },
       ],
     };
@@ -84,6 +110,11 @@ export default {
                 {
                   a: "a value2",
                   c: "",
+                  // someArr: [
+                  //   { d: "d 1", e: "e 1" },
+                  //   { d: "d 2", e: "e 2" },
+                  //   { d: "d 3", e: "e 3" },
+                  // ],
                 },
               ],
               totalSize: 222,
