@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-23 14:26:23
+ * @LastEditTime: 2022-06-23 15:37:51
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -23,12 +23,7 @@
       ></json2form-item>
     </template>
     <template v-else>
-      <el-row
-        class="flex_wrap"
-        align="top"
-        :gutter="10"
-        style="margin-left: 0; margin-right: 0"
-      >
+      <el-row align="top" :gutter="10" style="margin-left: 0; margin-right: 0">
         <el-col
           v-for="item in columns"
           :key="item.dataIndex"
@@ -111,9 +106,9 @@ export default {
 };
 </script>
 
-<style>
-.flex_wrap {
-  display: flex;
-  flex-wrap: wrap;
+<style scoped>
+::v-deep [class*="el-col-"] {
+  display: inline-block;
+  float: none;
 }
 </style>
