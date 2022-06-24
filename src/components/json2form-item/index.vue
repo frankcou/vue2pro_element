@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-24 13:53:02
+ * @LastEditTime: 2022-06-24 16:40:01
  * @LastEditors: zoufengfan
 -->
 
@@ -18,6 +18,8 @@ export default {
     value: {
       type: Object,
     },
+    // 用于设置el-form-item__content的宽度
+    contentWidth: String,
   },
   computed: {
     form: {
@@ -28,6 +30,14 @@ export default {
         this.$emit("input", val);
       },
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      document.body.style.setProperty(
+        "--formitem_content-w",
+        this.contentWidth || "auto"
+      );
+    });
   },
   render() {
     const getObj = (obj, ...args) => {
@@ -94,7 +104,10 @@ export default {
     return (
       <el-form-item
         ref="form-item"
-        class={valueType === "group" ? "group_item" : ""}
+        class={{
+          "json2form-item": true,
+          group_item: valueType === "group",
+        }}
         label={this.item.title ? this.item.title + (editable ? "" : ": ") : ""}
         props={{
           prop: dataIndex,
@@ -310,5 +323,14 @@ export default {
 }
 .group_item > ::v-deep .el-form-item__content {
   width: 100%;
+}
+.json2form-item .el-select {
+  width: 100%;
+}
+.json2form-item .el-date-editor.el-input {
+  width: 100%;
+}
+::v-deep .el-form-item__content {
+  width: var(--formitem_content-w);
 }
 </style>
