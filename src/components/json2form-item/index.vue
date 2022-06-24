@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-24 13:14:00
+ * @LastEditTime: 2022-06-24 13:53:02
  * @LastEditors: zoufengfan
 -->
 
@@ -79,7 +79,7 @@ export default {
     const renderScopedSlots = () => {
       if (!scopedSlots) return "";
       return Object.keys(scopedSlots).map((slotName) => (
-        <template slot={slotName}>{scopedSlots[slotName]()}</template>
+        <template slot={slotName}>{scopedSlots[slotName](this)}</template>
       ));
     };
 
@@ -93,6 +93,7 @@ export default {
     // 正常情况
     return (
       <el-form-item
+        ref="form-item"
         class={valueType === "group" ? "group_item" : ""}
         label={this.item.title ? this.item.title + (editable ? "" : ": ") : ""}
         props={{
