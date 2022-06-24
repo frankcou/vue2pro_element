@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-24 09:22:37
+ * @LastEditTime: 2022-06-24 15:24:51
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -18,23 +18,17 @@
       v-bind="formProps"
       v-on="formProps && formProps.on"
       :loading="loading"
+      v-if="isVisible"
     ></pro-form>
 
-    <div slot="footer" v-if="$slots.footer && $slots.footer.length">
+    <div slot="footer" v-if="editable">
       <slot name="footer">
-        <el-button
-          v-if="editable"
-          @click="handleClose"
-          :disabled="btnLoading"
-          >{{ closeText }}</el-button
-        >
-        <el-button
-          v-if="editable"
-          type="primary"
-          @click="handleSubmit"
-          :loading="btnLoading"
-          >{{ okText }}</el-button
-        >
+        <el-button @click="handleClose" :disabled="btnLoading">{{
+          closeText
+        }}</el-button>
+        <el-button type="primary" @click="handleSubmit" :loading="btnLoading">{{
+          okText
+        }}</el-button>
       </slot>
     </div>
   </el-dialog>
