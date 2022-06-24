@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-24 17:17:11
+ * @LastEditTime: 2022-06-24 17:36:16
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -12,14 +12,16 @@
     :visible.sync="isVisible"
     :before-close="handleClose"
   >
-    <pro-form
-      ref="proform"
-      :columns="columns"
-      v-bind="formProps"
-      v-on="formProps && formProps.on"
-      :loading="loading"
-      v-if="isVisible"
-    ></pro-form>
+    <slot>
+      <pro-form
+        ref="proform"
+        :columns="columns"
+        v-bind="formProps"
+        v-on="formProps && formProps.on"
+        :loading="loading"
+        v-if="isVisible"
+      ></pro-form>
+    </slot>
 
     <div slot="footer" v-if="editable">
       <slot name="footer">
@@ -102,9 +104,9 @@ export default {
         }
       }
     },
-    handleSubmit() {
+    handleSubmit(slotForm) {
       this.btnLoading = true;
-      const form = this.$refs["proform"];
+      const form = slotForm || this.$refs["proform"];
       form.validate((_bool, obj) => {
         if (_bool) {
           this.$confirm("确认提交？")
