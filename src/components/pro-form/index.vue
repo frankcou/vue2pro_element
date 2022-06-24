@@ -1,13 +1,14 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-23 16:50:31
+ * @LastEditTime: 2022-06-24 15:30:04
  * @LastEditors: zoufengfan
 -->
 <template>
   <el-form
     class="pro-form"
     ref="form"
+    @submit.native.prevent
     v-loading="loading"
     v-bind="$attrs"
     v-on="$listeners"
@@ -94,6 +95,7 @@ export default {
         if (!val) {
           //   console.log("init pro-form");
           // init
+          Object.assign(this.$data, this.$options.data(this));
           this.columns.forEach((item) => {
             if (item.dataIndex) {
               // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
