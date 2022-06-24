@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-21 11:14:43
+ * @LastEditTime: 2022-06-24 09:22:37
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -10,7 +10,6 @@
     v-bind="dialogProps"
     v-on="dialogProps && dialogProps.on"
     :visible.sync="isVisible"
-    v-loading="loading"
     :before-close="handleClose"
   >
     <pro-form
