@@ -104,9 +104,9 @@ export default {
         }
       }
     },
-    handleSubmit(slotForm) {
+    handleSubmit(slotFormRef) {
       this.btnLoading = true;
-      const form = slotForm || this.$refs["proform"];
+      const form = slotFormRef || this.$refs["proform"];
       form.validate((_bool, obj) => {
         if (_bool) {
           this.$confirm("确认提交？")
