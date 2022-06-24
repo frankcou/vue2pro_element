@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-23 15:13:45
+ * @LastEditTime: 2022-06-23 16:38:41
  * @LastEditors: zoufengfan
 -->
 
@@ -66,6 +66,12 @@ export default {
         }
       }
       return map;
+    };
+
+    const getGroupColumns = (row, index) => {
+      let cols = this.item.groupColumns;
+      if (cols.constructor === Function) return cols({ row, index });
+      return cols;
     };
 
     // 完全不渲染
@@ -171,7 +177,7 @@ export default {
                     (this.form[dataIndex] || []).map((row, idx) => {
                       return (
                         <div>
-                          {this.item.groupColumns.map((childItem) => (
+                          {getGroupColumns(row, idx).map((childItem) => (
                             <json2form-item
                               key={
                                 dataIndex +
