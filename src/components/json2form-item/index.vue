@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-24 16:40:01
+ * @LastEditTime: 2022-06-24 17:09:52
  * @LastEditors: zoufengfan
 -->
 
@@ -31,13 +31,13 @@ export default {
       },
     },
   },
-  mounted() {
-    this.$nextTick(() => {
-      document.body.style.setProperty(
-        "--formitem_content-w",
-        this.contentWidth || "auto"
-      );
-    });
+  watch: {
+    contentWidth: {
+      immediate: true,
+      handler(val) {
+        document.body.style.setProperty("--formitem_content-w", val || "auto");
+      },
+    },
   },
   render() {
     const getObj = (obj, ...args) => {
