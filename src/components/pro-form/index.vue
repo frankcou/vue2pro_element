@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-24 16:13:34
+ * @LastEditTime: 2022-06-24 17:14:29
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -121,6 +121,7 @@ export default {
 <style scoped>
 ::v-deep [class*="el-col-"] {
   display: inline-block;
+  vertical-align: top;
   float: none;
 }
 .fitform-item {
