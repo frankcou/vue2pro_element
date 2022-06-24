@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-23 15:37:51
+ * @LastEditTime: 2022-06-23 16:50:31
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -28,7 +28,7 @@
           v-for="item in columns"
           :key="item.dataIndex"
           v-bind="item.colProps || { span: 12 }"
-          v-show="!item.hideInForm"
+          v-show="!getObj(item.hideInForm)"
         >
           <json2form-item
             v-model="model"
@@ -69,6 +69,11 @@ export default {
     },
   },
   methods: {
+    getObj(obj, ...args) {
+      if (!obj) return obj;
+      if (obj.constructor === Object || obj.constructor === Array) return obj;
+      if (obj.constructor === Function) return obj(this.model, ...args);
+    },
     validate(fn) {
       this.$refs["form"].validate(fn);
     },
