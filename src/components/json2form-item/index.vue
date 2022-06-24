@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-24 12:05:56
+ * @LastEditTime: 2022-06-24 13:14:00
  * @LastEditors: zoufengfan
 -->
 
@@ -155,7 +155,10 @@ export default {
                     </el-input-number>
                   )}
                   {valueType === "select" && (
-                    <el-select {...p}>{selectOptions()}</el-select>
+                    <el-select {...p}>
+                      {selectOptions()}
+                      {renderScopedSlots()}
+                    </el-select>
                   )}
                   {valueType === "cascader" && (
                     <el-cascader {...p}>{renderScopedSlots()}</el-cascader>
