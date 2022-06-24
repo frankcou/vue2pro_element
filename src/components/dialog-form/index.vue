@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-24 15:24:51
+ * @LastEditTime: 2022-06-24 17:17:11
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -120,6 +120,8 @@ export default {
             .catch(() => {
               this.btnLoading = false;
             });
+        } else {
+          this.btnLoading = false;
         }
       });
     },
