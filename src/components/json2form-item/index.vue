@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-23 16:38:41
+ * @LastEditTime: 2022-06-24 12:05:56
  * @LastEditors: zoufengfan
 -->
 
@@ -39,6 +39,7 @@ export default {
     const hideInForm = getObj(this.item.hideInForm);
     const fieldProps = getObj(this.item.fieldProps);
     const formItemProps = getObj(this.item.formItemProps);
+    const scopedSlots = getObj(this.item.scopedSlots);
     const editable =
       this.item.editable === undefined ? true : this.item.editable;
     let options = getObj(this.item.options) || [];
@@ -74,6 +75,14 @@ export default {
       return cols;
     };
 
+    // 好像jsx的scped
+    const renderScopedSlots = () => {
+      if (!scopedSlots) return "";
+      return Object.keys(scopedSlots).map((slotName) => (
+        <template slot={slotName}>{scopedSlots[slotName]()}</template>
+      ));
+    };
+
     // 完全不渲染
     if (hideInForm) return "";
 
@@ -84,6 +93,7 @@ export default {
     // 正常情况
     return (
       <el-form-item
+        class={valueType === "group" ? "group_item" : ""}
         label={this.item.title ? this.item.title + (editable ? "" : ": ") : ""}
         props={{
           prop: dataIndex,
@@ -102,7 +112,7 @@ export default {
                   ...fieldProps,
                 },
                 on: getFieldEvents(),
-                scopedSlots: getObj(this.item.scopedSlots),
+                // scopedSlots: getObj(this.item.scopedSlots),
               };
               // select 的 options
               let selectOptions = () => {
@@ -137,63 +147,88 @@ export default {
               return (
                 <div>
                   {(!valueType || valueType === "input") && (
-                    <el-input {...p}></el-input>
+                    <el-input {...p}>{renderScopedSlots()}</el-input>
                   )}
                   {valueType === "input-number" && (
-                    <el-input-number {...p}></el-input-number>
+                    <el-input-number {...p}>
+                      {renderScopedSlots()}
+                    </el-input-number>
                   )}
                   {valueType === "select" && (
                     <el-select {...p}>{selectOptions()}</el-select>
                   )}
                   {valueType === "cascader" && (
-                    <el-cascader {...p}></el-cascader>
+                    <el-cascader {...p}>{renderScopedSlots()}</el-cascader>
                   )}
-                  {valueType === "switch" && <el-switch {...p}></el-switch>}
+                  {valueType === "switch" && (
+                    <el-switch {...p}>{renderScopedSlots()}</el-switch>
+                  )}
                   {valueType === "time-select" && (
-                    <el-time-select {...p}></el-time-select>
+                    <el-time-select {...p}>
+                      {renderScopedSlots()}
+                    </el-time-select>
                   )}
                   {valueType === "date-picker" && (
-                    <el-date-picker {...p}></el-date-picker>
+                    <el-date-picker {...p}>
+                      {renderScopedSlots()}
+                    </el-date-picker>
                   )}
                   {valueType === "date-time-picker" && (
-                    <el-date-picker {...p}></el-date-picker>
+                    <el-date-picker {...p}>
+                      {renderScopedSlots()}
+                    </el-date-picker>
                   )}
-                  {valueType === "radio" && <el-radio {...p}></el-radio>}
+                  {valueType === "radio" && (
+                    <el-radio {...p}>{renderScopedSlots()}</el-radio>
+                  )}
                   {valueType === "checkbox" && (
-                    <el-checkbox {...p}></el-checkbox>
+                    <el-checkbox {...p}>{renderScopedSlots()}</el-checkbox>
                   )}
                   {valueType === "transfer" && (
-                    <el-transfer {...p}></el-transfer>
+                    <el-transfer {...p}>{renderScopedSlots()}</el-transfer>
                   )}
                   {/*  {valueType === 'file' && (
                       <el-select
-                      ></el-select>
+                      >{renderScopedSlots()}</el-select>
                     )}{valueType === 'img' && (
                       <el-select
-                      ></el-select>
+                      >{renderScopedSlots()}</el-select>
                     )} */}
 
                   {valueType === "group" &&
                     (this.form[dataIndex] || []).map((row, idx) => {
                       return (
-                        <div>
-                          {getGroupColumns(row, idx).map((childItem) => (
-                            <json2form-item
-                              key={
-                                dataIndex +
-                                "-" +
-                                idx +
-                                "-" +
-                                childItem.dataIndex
-                              }
-                              vModel={row}
-                              item={{
-                                ...childItem,
-                                editable: childItem.editable || editable,
-                              }}
-                            ></json2form-item>
-                          ))}
-                        </div>
+                        <el-row
+                          align="top"
+                          gutter={10}
+                          style="margin-left: 0; margin-right: 0"
+                        >
+                          {getGroupColumns(row, idx).map((childItem) => {
+                            return !getObj(childItem.hideInForm) ? (
+                              <el-col
+                                key={childItem.dataIndex}
+                                props={childItem.colProps || { span: 12 }}
+                              >
+                                <json2form-item
+                                  key={
+                                    dataIndex +
+                                    "-" +
+                                    idx +
+                                    "-" +
+                                    childItem.dataIndex
+                                  }
+                                  vModel={row}
+                                  item={{
+                                    ...childItem,
+                                    editable: childItem.editable || editable,
+                                  }}
+                                ></json2form-item>
+                              </el-col>
+                            ) : (
+                              ""
+                            );
+                          })}
+                        </el-row>
                       );
                     })}
                 </div>
@@ -261,9 +296,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .json-form-item-img {
   width: 70px;
   height: 70px;
+}
+.group_item {
+  width: 100%;
+}
+.group_item > ::v-deep .el-form-item__content {
+  width: 100%;
 }
 </style>

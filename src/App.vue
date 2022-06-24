@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:07:51
- * @LastEditTime: 2022-06-21 17:17:02
+ * @LastEditTime: 2022-06-24 12:06:53
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -48,6 +48,9 @@ export default {
               },
             },
           }),
+          scopedSlots: {
+            append: () => "append",
+          },
         },
         {
           // colProps: { span: 12 },
