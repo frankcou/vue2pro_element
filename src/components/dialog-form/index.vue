@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-24 17:36:16
+ * @LastEditTime: 2022-06-27 11:10:05
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -28,9 +28,12 @@
         <el-button @click="handleClose" :disabled="btnLoading">{{
           closeText
         }}</el-button>
-        <el-button type="primary" @click="handleSubmit" :loading="btnLoading">{{
-          okText
-        }}</el-button>
+        <el-button
+          type="primary"
+          @click="handleSubmit()"
+          :loading="btnLoading"
+          >{{ okText }}</el-button
+        >
       </slot>
     </div>
   </el-dialog>
