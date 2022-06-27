@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-24 17:09:52
+ * @LastEditTime: 2022-06-27 14:19:41
  * @LastEditors: zoufengfan
 -->
 
@@ -18,6 +18,9 @@ export default {
     value: {
       type: Object,
     },
+    // el-form-item上的prop，二维数据校验的话必须填，如:[{label:'222'},{label:'33'}]这种数据
+    // 输入示例：prop 或者 prop.2.prop
+    prop: String,
     // 用于设置el-form-item__content的宽度
     contentWidth: String,
   },
@@ -110,7 +113,8 @@ export default {
         }}
         label={this.item.title ? this.item.title + (editable ? "" : ": ") : ""}
         props={{
-          prop: dataIndex,
+          rules: this.item.rules,
+          prop: this.prop || dataIndex,
           ...formItemProps,
           required:
             editable && formItemProps && (formItemProps.required || false),
@@ -229,9 +233,16 @@ export default {
                                 <json2form-item
                                   key={
                                     dataIndex +
-                                    "-" +
+                                    "." +
                                     idx +
-                                    "-" +
+                                    "." +
+                                    childItem.dataIndex
+                                  }
+                                  prop={
+                                    (this.prop || dataIndex) +
+                                    "." +
+                                    idx +
+                                    "." +
                                     childItem.dataIndex
                                   }
                                   vModel={row}
