@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 16:37:32
- * @LastEditTime: 2022-06-21 14:53:59
+ * @LastEditTime: 2022-06-27 11:05:15
  * @LastEditors: zoufengfan
 -->
 
@@ -24,7 +24,6 @@
       //   },
       // },
     },
-    formItemProps: {},//选填,formitem属性,支持(form)=>FormItemProps类型
     transform: (e) => ({//选填,用于转换成其他字段
       startTime: e[0],
       endTime: e[1],
@@ -61,6 +60,8 @@
         </el-form-item>
       );
     },
+    formItemProps: {},//选填,formitem属性,支持(form)=>FormItemProps类型
+    rules: [],
     tableColumnProps: {},//选填,tableColumn属性
     dataRender: (scoped) => {//选填,表格/表单（只有editable === false时）内容的自定义，渲染表单内容时scoped为表单数据对象
       return <p>{scoped.row.xxxx}{scoped.$index}</p>;
