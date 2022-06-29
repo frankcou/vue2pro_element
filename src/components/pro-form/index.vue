@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-28 16:53:51
+ * @LastEditTime: 2022-06-29 13:31:21
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -21,7 +21,7 @@
         v-for="item in columns"
         :key="item.dataIndex"
         v-model="model"
-        :item="{ ...item, editable: item.editable || editable }"
+        :item="{ ...item, editable: isEditable(item) }"
       ></json2form-item>
     </template>
     <template v-else>
@@ -30,12 +30,12 @@
           v-for="item in columns"
           :key="item.dataIndex"
           v-bind="item.colProps || { span: 12 }"
-          v-show="!getObj(item.hideInForm)"
+          v-show="!getObj(item.hideInForm) && (isEditable(item) || item.title)"
         >
           <json2form-item
             :class="setFitClass"
             v-model="model"
-            :item="{ ...item, editable: item.editable || editable }"
+            :item="{ ...item, editable: isEditable(item) }"
             :contentWidth="
               $attrs['label-width']
                 ? 'calc(100% - ' + $attrs['label-width'] + ')'
@@ -81,6 +81,9 @@ export default {
     },
   },
   methods: {
+    isEditable(item) {
+      return item.editable || this.editable;
+    },
     getObj(obj, ...args) {
       if (!obj) return obj;
       if (obj.constructor === Object || obj.constructor === Array) return obj;
