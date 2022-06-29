@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-27 11:10:05
+ * @LastEditTime: 2022-06-28 15:59:04
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -12,6 +12,8 @@
     :visible.sync="isVisible"
     :before-close="handleClose"
   >
+    <slot name="formTop"></slot>
+
     <slot>
       <pro-form
         ref="proform"
@@ -22,6 +24,8 @@
         v-if="isVisible"
       ></pro-form>
     </slot>
+
+    <slot name="formBottom"></slot>
 
     <div slot="footer" v-if="editable">
       <slot name="footer">
@@ -61,6 +65,8 @@ export default {
       type: Boolean,
       default: false,
     },
+    // closeConfirm:Function,// 使用dialogProps.beforeClose
+    okConfirm: Function, //()=>Boolean true继续 false取消
   },
   data() {
     return {
@@ -109,22 +115,31 @@ export default {
     },
     handleSubmit(slotFormRef) {
       this.btnLoading = true;
+      const continueFn = () => {
+        this.onFinish(form.model)
+          .then((bool) => {
+            this.isVisible = bool;
+          })
+          .finally(() => {
+            this.btnLoading = false;
+          });
+      };
       const form = slotFormRef || this.$refs["proform"];
       form.validate((_bool, obj) => {
         if (_bool) {
-          this.$confirm("确认提交？")
-            .then((_) => {
-              this.onFinish(form.model)
-                .then((bool) => {
-                  this.isVisible = bool;
-                })
-                .finally(() => {
-                  this.btnLoading = false;
-                });
-            })
-            .catch(() => {
+          if (this.okConfirm) {
+            if (this.okConfirm()) {
+              continueFn();
+            } else {
               this.btnLoading = false;
-            });
+            }
+          } else {
+            this.$confirm("确认提交？")
+              .then(continueFn)
+              .catch(() => {
+                this.btnLoading = false;
+              });
+          }
         } else {
           this.btnLoading = false;
         }
