@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-29 14:58:58
+ * @LastEditTime: 2022-06-30 10:14:11
  * @LastEditors: zoufengfan
 -->
 
@@ -163,7 +163,11 @@ export default {
           "json2form-item": true,
           group_item: this.valueType === "group",
           fit_w: !!this.contentWidth,
-          iseditable: this.editable,
+          "group_item-hidden":
+            this.editable &&
+            this.valueType === "group" &&
+            this.preLvData[this.dataIndex] &&
+            !this.preLvData[this.dataIndex].length,
         }}
         label={this.item.title}
         props={{
@@ -365,28 +369,20 @@ export default {
                     this.emptyVal
                   );
                 } else if (this.valueType === "group") {
-                  let tableTitle = this.item.title ? (
-                    <div class="el-table-h">{this.item.title}</div>
-                  ) : (
-                    ""
-                  );
                   return (
-                    <div>
-                      {tableTitle}
-                      <el-table data={this.preLvData[this.dataIndex] || []}>
-                        {this.getGroupColumns().map((el) => {
-                          if (el.title) {
-                            return (
-                              <el-table-column label={el.title} key={el.title}>
-                                {this.renderDefVal}
-                              </el-table-column>
-                            );
-                          }
-                          return "";
-                        })}
-                        {/* */}
-                      </el-table>
-                    </div>
+                    <el-table data={this.preLvData[this.dataIndex] || []}>
+                      {this.getGroupColumns().map((el) => {
+                        if (el.title) {
+                          return (
+                            <el-table-column label={el.title} key={el.title}>
+                              {this.renderDefVal}
+                            </el-table-column>
+                          );
+                        }
+                        return "";
+                      })}
+                      {/* */}
+                    </el-table>
                   );
                 }
                 return this.renderDefVal;
@@ -406,12 +402,15 @@ export default {
 .group_item {
   width: 100%;
 }
-.group_item.iseditable {
-  padding-top: 15px;
-  border: 1px dashed #dcdfe6;
+.group_item.group_item-hidden {
+  display: none;
 }
 .group_item > ::v-deep .el-form-item__content {
   width: 100%;
+}
+.group_item.group_item-hidden > ::v-deep .el-form-item__content {
+  padding-top: 15px;
+  border: 1px dashed #dcdfe6;
 }
 .json2form-item .el-select {
   width: 100%;
