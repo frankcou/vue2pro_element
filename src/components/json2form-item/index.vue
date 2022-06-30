@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-30 10:14:11
+ * @LastEditTime: 2022-06-30 16:19:26
  * @LastEditors: zoufengfan
 -->
 
@@ -90,9 +90,9 @@ export default {
       this.elForm.validateField(this.prop || this.dataIndex, cb);
     },
     getObj(obj, ...args) {
-      if (!obj) return obj;
-      if (obj.constructor === Object || obj.constructor === Array) return obj;
-      if (obj.constructor === Function) return obj(this.preLvData, ...args);
+      if (obj && obj.constructor === Function)
+        return obj(this.preLvData, ...args);
+      else return obj;
     },
     getFieldEvents() {
       let map = {
