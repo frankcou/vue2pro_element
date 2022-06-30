@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-30 17:51:04
+ * @LastEditTime: 2022-06-30 17:53:58
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -111,13 +111,11 @@ export default {
       handler(val, oldval) {
         if (!val) {
           this.$nextTick(() => {
-            console.log("pro-form init ", this.columns);
+            console.log("pro-form init ");
             // init
             let model = {};
             this.columns.forEach((item) => {
-              console.log(item.dataIndex);
               if (item.dataIndex) {
-                console.log(1);
                 model[item.dataIndex] =
                   item.initialValue ||
                   (this.initialValues
@@ -133,13 +131,6 @@ export default {
             }
             // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
             this.$set(this, "model", model);
-            console.log("model", JSON.stringify(model));
-
-            console.log(
-              "columns",
-              this.columns.map((item) => item.dataIndex)
-            );
-            console.log("pro-form is inited", JSON.stringify(this.model));
           });
         }
       },
