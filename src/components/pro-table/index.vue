@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-21 14:49:10
+ * @LastEditTime: 2022-06-30 14:38:59
  * @LastEditors: zoufengfan
 -->
 
@@ -217,9 +217,10 @@ export default {
                 {this.columns
                   .filter((item) => !item.hideInForm)
                   .map((item, idx) => (
-                    <Json2FormItem
-                      props={{ model: this.form, item }}
-                    ></Json2FormItem>
+                    <json2form-item
+                      vModel={this.form}
+                      item={item}
+                    ></json2form-item>
                   ))}
               </label>
             ),
