@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-30 10:43:18
+ * @LastEditTime: 2022-06-30 12:04:11
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -33,15 +33,16 @@
           v-bind="item.colProps || { span: 12 }"
           v-show="!getObj(item.hideInForm) && (isEditable(item) || item.title)"
         >
-          <json2form-item
-            :class="setFitClass"
-            v-model="model"
-            :item="{ ...item, editable: isEditable(item) }"
-            :contentWidth="
+          <!-- :contentWidth="
               $attrs['label-width']
                 ? 'calc(100% - ' + $attrs['label-width'] + ')'
                 : ''
-            "
+            " -->
+          <!-- :class="setFitClass" -->
+
+          <json2form-item
+            v-model="model"
+            :item="{ ...item, editable: isEditable(item) }"
           ></json2form-item>
         </el-col>
       </el-row>
@@ -77,9 +78,9 @@ export default {
       if (this.$attrs.inline === undefined) return true;
       return this.$attrs.inline;
     },
-    setFitClass() {
-      return this.$attrs["label-width"] ? "fitform-item" : "";
-    },
+    // setFitClass() {
+    //   return this.$attrs["label-width"] ? "fitform-item" : "";
+    // },
   },
   methods: {
     isEditable(item) {
@@ -144,7 +145,9 @@ export default {
   vertical-align: top;
   float: none;
 }
-.fitform-item {
+</style>
+<!-- <style>
+.el-form--inline .fitform-item {
   display: block;
 }
-</style>
+</style> -->
