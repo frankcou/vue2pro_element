@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-30 12:04:11
+ * @LastEditTime: 2022-06-30 17:51:04
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -17,6 +17,7 @@
     :label-suffix="editable ? '' : ':'"
     :hide-required-asterisk="!editable"
   >
+    <slot name="before"></slot>
     <template v-if="!isInline">
       <json2form-item
         v-for="item in columns"
@@ -47,6 +48,7 @@
         </el-col>
       </el-row>
     </template>
+    <slot name="after"></slot>
   </el-form>
 </template>
 
@@ -87,9 +89,8 @@ export default {
       return item.editable || this.editable;
     },
     getObj(obj, ...args) {
-      if (!obj) return obj;
-      if (obj.constructor === Object || obj.constructor === Array) return obj;
-      if (obj.constructor === Function) return obj(this.model, ...args);
+      if (obj && obj.constructor === Function) return obj(this.model, ...args);
+      return obj;
     },
     validate(fn) {
       this.$refs["form"].validate(fn);
@@ -109,29 +110,37 @@ export default {
       immediate: true,
       handler(val, oldval) {
         if (!val) {
-          console.log("init pro-form");
-          // init
-          Object.assign(this.$data, this.$options.data(this));
-
-          this.columns.forEach((item) => {
-            if (item.dataIndex) {
-              // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
-              this.$set(
-                this.model,
-                item.dataIndex,
-                item.initialValue ||
+          this.$nextTick(() => {
+            console.log("pro-form init ", this.columns);
+            // init
+            let model = {};
+            this.columns.forEach((item) => {
+              console.log(item.dataIndex);
+              if (item.dataIndex) {
+                console.log(1);
+                model[item.dataIndex] =
+                  item.initialValue ||
                   (this.initialValues
                     ? this.initialValues[item.dataIndex]
-                    : undefined)
-              );
+                    : undefined);
+              }
+            });
+            if (this.initialValues) {
+              model = {
+                ...this.initialValues,
+                ...model,
+              };
             }
+            // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
+            this.$set(this, "model", model);
+            console.log("model", JSON.stringify(model));
+
+            console.log(
+              "columns",
+              this.columns.map((item) => item.dataIndex)
+            );
+            console.log("pro-form is inited", JSON.stringify(this.model));
           });
-          if (this.initialValues) {
-            this.model = {
-              ...this.initialValues,
-              ...this.model,
-            };
-          }
         }
       },
     },
