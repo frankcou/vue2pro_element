@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-29 13:31:21
+ * @LastEditTime: 2022-06-30 10:43:18
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -15,6 +15,7 @@
     :model="model"
     :inline="isInline"
     :label-suffix="editable ? '' : ':'"
+    :hide-required-asterisk="!editable"
   >
     <template v-if="!isInline">
       <json2form-item
