@@ -1,19 +1,19 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-30 14:38:59
+ * @LastEditTime: 2022-06-30 17:55:32
  * @LastEditors: zoufengfan
 -->
 
 <script>
-import SearchBar from "../search-bar/index.vue";
 import Json2FormItem from "../json2form-item";
 import Json2TableColumn from "../json2table-column";
+import proForm from "../pro-form";
 
 export default {
   name: "ProTable",
   components: {
-    SearchBar,
+    proForm,
   },
   props: {
     height: {
@@ -40,6 +40,7 @@ export default {
       type: Function,
       required: true,
     },
+    initialValues: Object,
     columns: {
       type: Array,
       required: true,
@@ -56,22 +57,11 @@ export default {
     tableProps: {
       type: Object,
       required: false,
-      default: () => ({
-        border: true,
-        size: "medium",
-        on: {},
-      }),
     },
     // ========= el-pagination组件相关,与文档一样 ==========
     paginationProps: {
       type: Object,
       required: false,
-      default: () => ({
-        pageSize: 10,
-        pageSizes: [10, 50, 100, 200],
-        layout: "total, sizes, prev, pager, next, jumper",
-        on: {},
-      }),
     },
   },
   data() {
@@ -89,10 +79,16 @@ export default {
     };
   },
   computed: {
+    // table字段配置
+    tableColumns() {
+      return this.columns.filter((item) => !item.hideInTable);
+    },
+  },
+  methods: {
     // 搜索参数
-    searchParams() {
+    getSearchParams() {
       let params = {
-        params: this.form,
+        params: this.$refs["pro-form"].model,
         pageNum: this.currentPage,
         pageSize: this.paginationAttr.pageSize,
       };
@@ -104,22 +100,17 @@ export default {
       });
       return this.transformParams ? this.transformParams(params) : params;
     },
-    // table字段配置
-    tableColumns() {
-      return this.columns.filter((item) => !item.hideInTable);
-    },
-  },
-  methods: {
     //   点击搜索框
     handleSearch() {
-      if (!this.canSearch(this.form)) return;
+      if (!this.canSearch(this.$refs["pro-form"].model)) return;
+      this.currentPage = 1;
       this.findPage();
       this.$emit("search");
     },
     //   点击重置表单
     handleClear() {
       this.$emit("reset");
-      this.$refs["search-bar"].$refs["form"].resetFields();
+      this.$refs["pro-form"].resetFields();
     },
     // 获取分页数据
     findPage() {
@@ -127,7 +118,7 @@ export default {
       return new Promise((res, rej) => {
         // nextTick为了防止没有获取最新的searchParams
         this.$nextTick(() => {
-          this.listPms(this.searchParams)
+          this.listPms(this.getSearchParams())
             .then((_res) => {
               res(_res);
               if (_res.code === 200) {
@@ -163,25 +154,21 @@ export default {
       this.findPage();
     },
   },
-
   watch: {
     searchBarLoading: {
       immediate: true,
       handler(val, oldval) {
         if (!val) {
           // console.log("init columns");
+          console.log("table columns", this.columns);
           // init
-          this.paginationAttr = this.paginationProps;
-          this.columns.forEach((item) => {
-            if (item.dataIndex) {
-              // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
-              this.$set(
-                this.form,
-                item.dataIndex,
-                item.initialValue || undefined
-              );
-            }
-          });
+          this.paginationAttr = {
+            pageSize: 10,
+            pageSizes: [10, 50, 100, 200],
+            layout: "total, sizes, prev, pager, next, jumper",
+            on: {},
+            ...this.paginationProps,
+          };
         }
       },
     },
@@ -204,30 +191,44 @@ export default {
         }
       >
         {/* 搜索部分 */}
-        <search-bar
-          loading={this.searchBarLoading}
-          ref="search-bar"
-          // model={this.form}//model是jsx-vue2的rootAttrs，不可直接使用，通过下方的props的方式写入model
-          props={{ model: this.form }}
-          handleSearch={this.handleSearch}
-          handleClear={this.handleClear}
-          scopedSlots={{
-            default: (scoped) => (
-              <label>
-                {this.columns
-                  .filter((item) => !item.hideInForm)
-                  .map((item, idx) => (
-                    <json2form-item
-                      vModel={this.form}
-                      item={item}
-                    ></json2form-item>
-                  ))}
-              </label>
-            ),
-            R: () => this.$slots.searchBtns,
-            B: () => this.$slots.searchBarBottom,
-          }}
-        ></search-bar>
+        <div class="search-bar" v-loading={this.searchBarLoading}>
+          {this.searchBarLoading || (
+            <pro-form
+              ref="pro-form"
+              class="table_form"
+              loading={this.searchBarLoading}
+              columns={this.columns}
+              initialValues={this.initialValues}
+              inline={false}
+              label-position="left"
+            >
+              <template slot="after">
+                <div class="search-btns">
+                  {this.$slots.searchBtns || (
+                    <div>
+                      <el-button
+                        type="primary"
+                        size="small"
+                        vOn:click={() => this.handleSearch()}
+                      >
+                        查 询
+                      </el-button>
+                      <el-button
+                        size="small"
+                        vOn:click={() => this.handleClear()}
+                      >
+                        重置
+                      </el-button>
+                    </div>
+                  )}
+                </div>
+                <div class="search-bar-bottom">
+                  {this.$slots.searchBarBottom}
+                </div>
+              </template>
+            </pro-form>
+          )}
+        </div>
 
         {/* 插槽 */}
         {this.$slots.tableTop}
@@ -238,7 +239,9 @@ export default {
           vLoading={this.tableLoading}
           data={this.pageResult.content}
           props={{
-            ...this.tableProps,
+            border: true,
+            size: "medium",
+            on: {},
             height: this.height ? "100%" : undefined,
             ...this.tableProps,
           }}
@@ -272,5 +275,27 @@ export default {
 ::v-deep .pro_table-pagination {
   padding: 15px 0;
   text-align: center;
+}
+.search-bar {
+  padding: 10px 15px;
+}
+::v-deep .el-form-item {
+  margin-bottom: 10px;
+}
+.search-btns {
+  display: inline-block;
+  margin-bottom: 10px;
+  line-height: 32px;
+}
+.table_form ::v-deep .el-form-item {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 10px;
+}
+.table_form ::v-deep .el-form-item__label {
+  float: none;
+}
+.table_form ::v-deep .el-form-item__content {
+  display: inline-block;
 }
 </style>
