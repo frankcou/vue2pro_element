@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-07-01 13:31:48
+ * @LastEditTime: 2022-07-01 16:05:03
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -100,6 +100,18 @@ export default {
     },
     resetFields() {
       this.$refs["form"].resetFields();
+      // 处理transform参数
+      this.columns.forEach((item) => {
+        if (typeof item.transform === "function") {
+          let object = item.transform(null);
+          for (const key in object) {
+            if (Object.hasOwnProperty.call(object, key)) {
+              const value = object[key];
+              this.$set(this.model, key, value);
+            }
+          }
+        }
+      });
     },
     clearValidate(fn) {
       this.$refs["form"].clearValidate(fn);
@@ -113,7 +125,6 @@ export default {
           let model = {};
           this.columns.forEach((item) => {
             if (item.dataIndex) {
-              console.log(1);
               model[item.dataIndex] = this.model[item.dataIndex];
             }
           });

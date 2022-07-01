@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-07-01 15:28:41
+ * @LastEditTime: 2022-07-01 16:05:59
  * @LastEditors: zoufengfan
 -->
 
@@ -100,7 +100,7 @@ export default {
           // 正常赋值
           this.preLvData[this.dataIndex] = e;
           // 额外赋值
-          if (this.item.transform) {
+          if (typeof this.item.transform === "function") {
             let object = this.item.transform(e);
             for (const key in object) {
               if (Object.hasOwnProperty.call(object, key)) {
