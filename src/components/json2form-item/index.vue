@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-06-30 16:19:26
+ * @LastEditTime: 2022-07-01 15:28:41
  * @LastEditors: zoufengfan
 -->
 
@@ -341,7 +341,11 @@ export default {
                   let opt = this.options.find(
                     (el) => el.value === this.preLvData[this.dataIndex]
                   );
-                  return (opt && opt.label) || this.emptyVal;
+                  return (
+                    (opt && opt.label) ||
+                    this.preLvData[this.dataIndex] ||
+                    this.emptyVal
+                  );
                 } else if (this.valueType === "file") {
                   return (
                     <el-button
