@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-06-30 17:53:58
+ * @LastEditTime: 2022-07-01 13:31:48
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -106,6 +106,21 @@ export default {
     },
   },
   watch: {
+    columns: {
+      deep: true,
+      handler(val) {
+        this.$nextTick(() => {
+          let model = {};
+          this.columns.forEach((item) => {
+            if (item.dataIndex) {
+              console.log(1);
+              model[item.dataIndex] = this.model[item.dataIndex];
+            }
+          });
+          this.$set(this, "model", model);
+        });
+      },
+    },
     loading: {
       immediate: true,
       handler(val, oldval) {
@@ -116,6 +131,7 @@ export default {
             let model = {};
             this.columns.forEach((item) => {
               if (item.dataIndex) {
+                console.log(1);
                 model[item.dataIndex] =
                   item.initialValue ||
                   (this.initialValues
