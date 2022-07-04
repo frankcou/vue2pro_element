@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-07-01 16:05:59
+ * @LastEditTime: 2022-07-04 15:18:14
  * @LastEditors: zoufengfan
 -->
 
@@ -163,11 +163,12 @@ export default {
           "json2form-item": true,
           group_item: this.valueType === "group",
           fit_w: !!this.contentWidth,
+          is_editable: this.editable,
           "group_item-hidden":
             this.editable &&
             this.valueType === "group" &&
-            this.preLvData[this.dataIndex] &&
-            !this.preLvData[this.dataIndex].length,
+            (!this.preLvData[this.dataIndex] ||
+              !this.preLvData[this.dataIndex].length),
         }}
         label={this.item.title}
         props={{
@@ -412,10 +413,14 @@ export default {
 .group_item > ::v-deep .el-form-item__content {
   width: 100%;
 }
-.group_item.group_item-hidden > ::v-deep .el-form-item__content {
+.group_item.is_editable > ::v-deep .el-form-item__content {
   padding-top: 15px;
   border: 1px dashed #dcdfe6;
 }
+/* .group_item.group_item-hidden > ::v-deep .el-form-item__content {
+  padding-top: 15px;
+  border: 1px dashed #dcdfe6;
+} */
 .json2form-item .el-select {
   width: 100%;
 }
