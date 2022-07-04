@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-07-01 16:05:03
+ * @LastEditTime: 2022-07-04 15:25:05
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -95,8 +95,8 @@ export default {
     validate(fn) {
       this.$refs["form"].validate(fn);
     },
-    validateField(fn) {
-      this.$refs["form"].validateField(fn);
+    validateField(...args) {
+      this.$refs["form"].validateField(...args);
     },
     resetFields() {
       this.$refs["form"].resetFields();
