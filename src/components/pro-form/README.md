@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 16:31:21
- * @LastEditTime: 2022-07-04 16:55:23
+ * @LastEditTime: 2022-07-04 18:05:16
  * @LastEditors: zoufengfan
 -->
 
@@ -23,3 +23,22 @@
 | 字段名 | 描述         |
 | ------ | ------------ |
 | form   | el-form 实例 |
+
+## 其他
+
+- 若想表单好看整齐一些，又不打算考虑 flex 兼容问题的话可以改写 el-form-item 样式：
+
+  ```scss
+  .some_component {
+    .el-form-item {
+      display: flex;
+      .el-form-item__content {
+        flex: 1;
+        width: 100%;
+      }
+    }
+  }
+  ```
+
+- 对于`inline===false`的表单，是否显示对应字段的条件为`!item.hideInForm && (item.editable || item.title)`
+-
