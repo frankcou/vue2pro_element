@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-06-28 15:59:04
+ * @LastEditTime: 2022-07-05 09:17:59
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -93,7 +93,7 @@ export default {
   },
   methods: {
     init() {
-      this.$refs["proform"].resetFields();
+      // this.$refs["proform"].resetFields();
       Object.assign(this.$data, this.$options.data(this));
     },
     handleClose() {
