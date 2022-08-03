@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:07:51
- * @LastEditTime: 2022-06-24 12:06:53
+ * @LastEditTime: 2022-08-03 11:15:12
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -77,7 +77,20 @@ export default {
           title: "这是个数组对象",
           dataIndex: "someArr",
           valueType: "group",
-          initialValue: [],
+          initialValue: [
+            { d: "columns-someArr-d-1", e: "columns-someArr-e-1" },
+            { d: "columns-someArr-d-2", e: "columns-someArr-e-2" },
+          ],
+          // dataRender: (scoped) => {
+          //   return scoped.row ? (
+          //     //这是table的渲染
+          //     <pre class="align_left">
+          //       {JSON.stringify(scoped.row, null, 2)}
+          //     </pre>
+          //   ) : (
+          //     <dd>这是form详情的渲染</dd>
+          //   );
+          // },
           groupColumns: [
             {
               title: "d title",
@@ -104,20 +117,22 @@ export default {
                   a: "a value1",
                   b: 2,
                   c: "b value1",
+                  someArr: [],
                 },
                 {
                   a: "a value2",
                   b: "b value2",
                   c: "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/vue/vue.png",
+                  someArr: [],
                 },
                 {
                   a: "a value2",
                   c: "",
-                  // someArr: [
-                  //   { d: "d 1", e: "e 1" },
-                  //   { d: "d 2", e: "e 2" },
-                  //   { d: "d 3", e: "e 3" },
-                  // ],
+                  someArr: [
+                    { d: "d 1", e: "e 1" },
+                    { d: "d 2", e: "e 2" },
+                    { d: "d 3", e: "e 3" },
+                  ],
                 },
               ],
               totalSize: 222,
@@ -151,5 +166,8 @@ body,
   height: 100%;
   margin: 0;
   overflow: auto;
+}
+.align_left {
+  text-align: left;
 }
 </style>

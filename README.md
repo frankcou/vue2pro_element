@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-10 10:08:14
- * @LastEditTime: 2022-06-17 15:06:40
+ * @LastEditTime: 2022-08-03 09:44:26
  * @LastEditors: zoufengfan
 -->
 
@@ -25,11 +25,11 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props vue2pro_
 
   ```js
   import "element-ui/lib/theme-chalk/index.css";
-  import ProTable from "vue2pro_element";
+  import ProElement from "vue2pro_element";
   import ElementUI from "element-ui";
 
   Vue.use(ElementUI, { size: "small" });
-  Vue.use(ProTable);
+  Vue.use(ProElement);
   ```
 
 - somecomponent.vue(基础 pro-table 演示)
