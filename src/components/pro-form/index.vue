@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2022-07-04 15:25:05
+ * @LastEditTime: 2023-02-15 10:04:43
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -54,7 +54,7 @@
 
 <script>
 export default {
-  name: "pro-form",
+  name: 'pro-form',
   props: {
     loading: {
       default: false,
@@ -93,16 +93,16 @@ export default {
       return obj;
     },
     validate(fn) {
-      this.$refs["form"].validate(fn);
+      this.$refs['form'].validate(fn);
     },
     validateField(...args) {
-      this.$refs["form"].validateField(...args);
+      this.$refs['form'].validateField(...args);
     },
     resetFields() {
-      this.$refs["form"].resetFields();
+      this.$refs['form'].resetFields();
       // 处理transform参数
       this.columns.forEach((item) => {
-        if (typeof item.transform === "function") {
+        if (typeof item.transform === 'function') {
           let object = item.transform(null);
           for (const key in object) {
             if (Object.hasOwnProperty.call(object, key)) {
@@ -114,7 +114,7 @@ export default {
       });
     },
     clearValidate(fn) {
-      this.$refs["form"].clearValidate(fn);
+      this.$refs['form'].clearValidate(fn);
     },
   },
   watch: {
@@ -128,7 +128,7 @@ export default {
               model[item.dataIndex] = this.model[item.dataIndex];
             }
           });
-          this.$set(this, "model", model);
+          this.$set(this, 'model', model);
         });
       },
     },
@@ -137,7 +137,7 @@ export default {
       handler(val, oldval) {
         if (!val) {
           this.$nextTick(() => {
-            console.log("pro-form init ");
+            console.log('pro-form init ');
             // init
             let model = {};
             this.columns.forEach((item) => {
@@ -157,7 +157,7 @@ export default {
               };
             }
             // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
-            this.$set(this, "model", model);
+            this.$set(this, 'model', model);
           });
         }
       },
@@ -167,7 +167,7 @@ export default {
 </script>
 
 <style scoped>
-::v-deep [class*="el-col-"] {
+::v-deep [class*='el-col-'] {
   display: inline-block;
   vertical-align: top;
   float: none;
