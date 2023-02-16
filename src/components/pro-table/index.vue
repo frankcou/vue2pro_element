@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-16 13:28:00
+ * @LastEditTime: 2023-02-16 15:10:04
  * @LastEditors: zoufengfan
 -->
 
@@ -16,12 +16,6 @@ export default {
     proForm,
   },
   props: {
-    /**是否需要在查询的时候将参数放到url上 */
-    isSearchReplaceRoute: {
-      type: Boolean,
-      default: false,
-    },
-
     height: {
       type: String,
     },
@@ -111,7 +105,6 @@ export default {
       if (!this.canSearch(this.$refs['pro-form'].model)) return;
       this.currentPage = 1;
       this.findPage();
-      this.$emit('search');
     },
     //   点击重置表单
     handleClear() {
@@ -120,11 +113,12 @@ export default {
     },
     // 获取分页数据
     findPage() {
-      const params = this.getSearchParams();
-      this.tableLoading = true;
       return new Promise((res, rej) => {
         // nextTick为了防止没有获取最新的searchParams
         this.$nextTick(() => {
+          this.$emit('search');
+          const params = this.getSearchParams();
+          this.tableLoading = true;
           this.listPms(params)
             .then((_res) => {
               res(_res);
@@ -146,15 +140,6 @@ export default {
               });
             })
             .finally(() => {
-              if (this.isSearchReplaceRoute) {
-                this.$router.replace({
-                  query: {
-                    ...this.$refs['pro-form'].model,
-                    pageNum: this.currentPage,
-                    pageSize: this.paginationAttr.pageSize,
-                  },
-                });
-              }
               this.tableLoading = false;
             });
         });
@@ -175,7 +160,6 @@ export default {
       immediate: true,
       handler(val, oldval) {
         if (!val) {
-          // console.log("init columns");
           console.log('table columns', this.columns);
           // init
           this.paginationAttr = {
