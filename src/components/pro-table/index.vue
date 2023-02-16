@@ -1,21 +1,27 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2022-06-30 17:55:32
+ * @LastEditTime: 2023-02-16 13:15:14
  * @LastEditors: zoufengfan
 -->
 
 <script>
-import Json2FormItem from "../json2form-item";
-import Json2TableColumn from "../json2table-column";
-import proForm from "../pro-form";
+import Json2FormItem from '../json2form-item';
+import Json2TableColumn from '../json2table-column';
+import proForm from '../pro-form';
 
 export default {
-  name: "ProTable",
+  name: 'ProTable',
   components: {
     proForm,
   },
   props: {
+    /**是否需要在查询的时候将参数放到url上 */
+    isSearchReplaceRoute: {
+      type: Boolean,
+      default: false,
+    },
+
     height: {
       type: String,
     },
@@ -88,7 +94,7 @@ export default {
     // 搜索参数
     getSearchParams() {
       let params = {
-        params: this.$refs["pro-form"].model,
+        params: this.$refs['pro-form'].model,
         pageNum: this.currentPage,
         pageSize: this.paginationAttr.pageSize,
       };
@@ -102,23 +108,24 @@ export default {
     },
     //   点击搜索框
     handleSearch() {
-      if (!this.canSearch(this.$refs["pro-form"].model)) return;
+      if (!this.canSearch(this.$refs['pro-form'].model)) return;
       this.currentPage = 1;
       this.findPage();
-      this.$emit("search");
+      this.$emit('search');
     },
     //   点击重置表单
     handleClear() {
-      this.$emit("reset");
-      this.$refs["pro-form"].resetFields();
+      this.$emit('reset');
+      this.$refs['pro-form'].resetFields();
     },
     // 获取分页数据
     findPage() {
+      const params = this.getSearchParams();
       this.tableLoading = true;
       return new Promise((res, rej) => {
         // nextTick为了防止没有获取最新的searchParams
         this.$nextTick(() => {
-          this.listPms(this.getSearchParams())
+          this.listPms(params)
             .then((_res) => {
               res(_res);
               if (_res.code === 200) {
@@ -126,7 +133,7 @@ export default {
               } else {
                 rej(_res);
                 this.$message({
-                  type: "error",
+                  type: 'error',
                   message: _res.msg,
                 });
               }
@@ -134,11 +141,20 @@ export default {
             .catch((e) => {
               rej(e);
               this.$message({
-                type: "error",
+                type: 'error',
                 message: e.msg || e.message,
               });
             })
             .finally(() => {
+              if (this.isSearchReplaceRoute) {
+                this.$router.replace({
+                  query: {
+                    ...this.$refs['pro-form'].model,
+                    // pageNum: this.currentPage,
+                    // pageSize: this.paginationAttr.pageSize,
+                  },
+                });
+              }
               this.tableLoading = false;
             });
         });
@@ -160,12 +176,12 @@ export default {
       handler(val, oldval) {
         if (!val) {
           // console.log("init columns");
-          console.log("table columns", this.columns);
+          console.log('table columns', this.columns);
           // init
           this.paginationAttr = {
             pageSize: 10,
             pageSizes: [10, 50, 100, 200],
-            layout: "total, sizes, prev, pager, next, jumper",
+            layout: 'total, sizes, prev, pager, next, jumper',
             on: {},
             ...this.paginationProps,
           };
@@ -183,8 +199,8 @@ export default {
         style={
           this.height
             ? {
-                display: "flex",
-                "flex-direction": "column",
+                display: 'flex',
+                'flex-direction': 'column',
                 height: this.height,
               }
             : undefined
@@ -240,9 +256,9 @@ export default {
           data={this.pageResult.content}
           props={{
             border: true,
-            size: "medium",
+            size: 'medium',
             on: {},
-            height: this.height ? "100%" : undefined,
+            height: this.height ? '100%' : undefined,
             ...this.tableProps,
           }}
           on={this.tableProps && this.tableProps.on}
