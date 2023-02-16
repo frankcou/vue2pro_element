@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-16 13:15:14
+ * @LastEditTime: 2023-02-16 13:28:00
  * @LastEditors: zoufengfan
 -->
 
@@ -150,8 +150,8 @@ export default {
                 this.$router.replace({
                   query: {
                     ...this.$refs['pro-form'].model,
-                    // pageNum: this.currentPage,
-                    // pageSize: this.paginationAttr.pageSize,
+                    pageNum: this.currentPage,
+                    pageSize: this.paginationAttr.pageSize,
                   },
                 });
               }
