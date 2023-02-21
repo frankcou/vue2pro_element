@@ -1,12 +1,11 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-16 15:10:04
+ * @LastEditTime: 2023-02-21 10:10:37
  * @LastEditors: zoufengfan
 -->
 
 <script>
-import Json2FormItem from '../json2form-item';
 import Json2TableColumn from '../json2table-column';
 import proForm from '../pro-form';
 
@@ -63,6 +62,12 @@ export default {
       type: Object,
       required: false,
     },
+    /**可利用此属性对搜索栏高度进行调整，单位px */
+    searchBarHeight: {
+      type: Number,
+      default: 43 * 3, //包括搜索按钮位置，默认3行高度
+      required: false,
+    },
   },
   data() {
     return {
@@ -76,6 +81,9 @@ export default {
         content: [],
         totalSize: 0,
       },
+      isOpen: false,
+      /**实例化之后的form的高度，取scrollHeight */
+      formHeight: 0,
     };
   },
   computed: {
@@ -85,6 +93,10 @@ export default {
     },
   },
   methods: {
+    toggle() {
+      this.isOpen = !this.isOpen;
+      this.$emit('toggle', this.isOpen);
+    },
     // 搜索参数
     getSearchParams() {
       let params = {
@@ -104,6 +116,7 @@ export default {
     handleSearch() {
       if (!this.canSearch(this.$refs['pro-form'].model)) return;
       this.currentPage = 1;
+      this.isOpen = false;
       this.findPage();
     },
     //   点击重置表单
@@ -160,7 +173,7 @@ export default {
       immediate: true,
       handler(val, oldval) {
         if (!val) {
-          console.log('table columns', this.columns);
+          // console.log('table columns', this.columns);
           // init
           this.paginationAttr = {
             pageSize: 10,
@@ -170,6 +183,17 @@ export default {
             ...this.paginationProps,
           };
         }
+      },
+    },
+    columns: {
+      handler(val, oldval) {
+        this.$nextTick(() => {
+          // console.log(
+          //   'pro-form实例：',
+          //   this.$refs['pro-form'].$el.scrollHeight,
+          // );
+          this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
+        });
       },
     },
   },
@@ -191,11 +215,18 @@ export default {
         }
       >
         {/* 搜索部分 */}
-        <div class="search-bar" v-loading={this.searchBarLoading}>
+        <div
+          class="search-bar"
+          style={`height:${this.searchBarHeight}px`}
+          v-loading={this.searchBarLoading}
+        >
           {this.searchBarLoading || (
             <pro-form
               ref="pro-form"
-              class="table_form"
+              class={`table_form ${this.isOpen ? 'open ' : ''}`}
+              style={`max-height:${
+                this.isOpen ? '1000px' : `${this.searchBarHeight}px`
+              }`}
               loading={this.searchBarLoading}
               columns={this.columns}
               initialValues={this.initialValues}
@@ -203,27 +234,42 @@ export default {
               label-position="left"
             >
               <template slot="after">
-                <div class="search-btns">
-                  {this.$slots.searchBtns || (
-                    <div>
-                      <el-button
-                        type="primary"
-                        size="small"
-                        vOn:click={() => this.handleSearch()}
-                      >
-                        查 询
-                      </el-button>
-                      <el-button
-                        size="small"
-                        vOn:click={() => this.handleClear()}
-                      >
-                        重置
-                      </el-button>
-                    </div>
-                  )}
-                </div>
-                <div class="search-bar-bottom">
-                  {this.$slots.searchBarBottom}
+                <div class="search-bar-bottom clearfix">
+                  <div class="fl">{this.$slots.searchBarBottom}</div>
+                  <div class="search-btns fr">
+                    {this.$slots.searchBtns || (
+                      <div>
+                        <el-button
+                          type="primary"
+                          size="small"
+                          vOn:click={() => this.handleSearch()}
+                        >
+                          查 询
+                        </el-button>
+                        <el-button
+                          size="small"
+                          vOn:click={() => this.handleClear()}
+                        >
+                          重置
+                        </el-button>
+
+                        {this.formHeight > this.searchBarHeight && (
+                          <el-button
+                            class="toggle_btn"
+                            type="text"
+                            vOn:click={() => this.toggle()}
+                          >
+                            {this.isOpen ? '收起' : '展开'}
+                            <i
+                              class={`el-icon-arrow-${
+                                this.isOpen ? 'up' : 'down'
+                              } el-icon--right`}
+                            />
+                          </el-button>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </template>
             </pro-form>
@@ -240,7 +286,6 @@ export default {
           data={this.pageResult.content}
           props={{
             border: true,
-            size: 'medium',
             on: {},
             height: this.height ? '100%' : undefined,
             ...this.tableProps,
@@ -277,16 +322,42 @@ export default {
   text-align: center;
 }
 .search-bar {
+  position: relative;
+  /* table的fixed：left/right有4级层高 */
+  z-index: 5;
   padding: 10px 15px;
+}
+.table_form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: 44px;
+  background: #fff;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 10px 10px rgba(239, 239, 239, 0.5);
+  border-bottom: 1px solid #efefef;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out 0.1s;
+}
+.search-bar-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  /* padding: 10px 0; */
+  height: 44px;
 }
 ::v-deep .el-form-item {
   margin-bottom: 10px;
 }
 .search-btns {
   display: inline-block;
-  margin-bottom: 10px;
   line-height: 32px;
 }
+
 .table_form ::v-deep .el-form-item {
   display: inline-block;
   vertical-align: top;
@@ -297,5 +368,26 @@ export default {
 }
 .table_form ::v-deep .el-form-item__content {
   display: inline-block;
+}
+.clearfix:after {
+  content: '';
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.clearfix {
+  /* 触发 hasLayout */
+  zoom: 1;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.toggle_btn {
+  margin: 0 15px;
 }
 </style>
