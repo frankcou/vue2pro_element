@@ -1,13 +1,21 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-21 10:10:37
+ * @LastEditTime: 2023-02-21 11:09:10
  * @LastEditors: zoufengfan
 -->
 
 <script>
 import Json2TableColumn from '../json2table-column';
 import proForm from '../pro-form';
+function debounce(fn, delay = 1000) {
+  let time = null;
+  function _debounce() {
+    if (time !== null) clearTimeout(time);
+    time = setTimeout(fn, delay);
+  }
+  return _debounce;
+}
 
 export default {
   name: 'ProTable',
@@ -196,6 +204,15 @@ export default {
         });
       },
     },
+  },
+
+  mounted() {
+    window.onresize = debounce(() => {
+      this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
+    }, 300);
+  },
+  beforeDestroy() {
+    window.onresize = null;
   },
 
   render(h) {
