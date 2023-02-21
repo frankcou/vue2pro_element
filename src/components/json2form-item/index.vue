@@ -1,13 +1,13 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 17:38:41
- * @LastEditTime: 2022-07-04 15:18:14
+ * @LastEditTime: 2023-02-21 13:43:17
  * @LastEditors: zoufengfan
 -->
 
 <script>
 export default {
-  name: "json2form-item",
+  name: 'json2form-item',
   props: {
     // json配置
     item: {
@@ -24,18 +24,18 @@ export default {
     // 用于设置el-form-item__content的宽度
     // contentWidth: String,d
   },
-  inject: ["elForm"],
+  inject: ['elForm'],
   computed: {
     preLvData: {
       get() {
         return this.value || {};
       },
       set(val) {
-        this.$emit("input", val);
+        this.$emit('input', val);
       },
     },
     rowIndex() {
-      let propArr = (this.prop || "").split(".");
+      let propArr = (this.prop || '').split('.');
       propArr.length -= 1;
       return propArr[propArr.length - 1];
     },
@@ -76,7 +76,7 @@ export default {
       );
     },
     emptyVal() {
-      return this.item.title ? "-" : "";
+      return this.item.title ? '-' : '';
     },
     renderDefVal() {
       return this.preLvData[this.dataIndex] === null ||
@@ -100,7 +100,7 @@ export default {
           // 正常赋值
           this.preLvData[this.dataIndex] = e;
           // 额外赋值
-          if (typeof this.item.transform === "function") {
+          if (typeof this.item.transform === 'function') {
             let object = this.item.transform(e);
             for (const key in object) {
               if (Object.hasOwnProperty.call(object, key)) {
@@ -138,21 +138,21 @@ export default {
   render() {
     // 解决jsx的ScopedSlots属性不完全奏效的问题
     const renderScopedSlots = () => {
-      if (!this.scopedSlots) return "";
+      if (!this.scopedSlots) return '';
       return Object.keys(this.scopedSlots).map((slotName) => (
         <template slot={slotName}>{this.scopedSlots[slotName](this)}</template>
       ));
     };
 
     // 完全不渲染
-    if (this.hideInForm) return "";
+    if (this.hideInForm) return '';
 
     // 完全自定义，为了方便定义多维数据
     if (this.editable && this.item.formItemRender) {
       return this.item.formItemRender(
         this.preLvData,
         this.elForm.model,
-        this.prop
+        this.prop,
       );
     }
 
@@ -160,13 +160,13 @@ export default {
     return (
       <el-form-item
         class={{
-          "json2form-item": true,
-          group_item: this.valueType === "group",
+          'json2form-item': true,
+          group_item: this.valueType === 'group',
           fit_w: !!this.contentWidth,
           is_editable: this.editable,
-          "group_item-hidden":
+          'group_item-hidden':
             this.editable &&
-            this.valueType === "group" &&
+            this.valueType === 'group' &&
             (!this.preLvData[this.dataIndex] ||
               !this.preLvData[this.dataIndex].length),
         }}
@@ -185,6 +185,7 @@ export default {
                 attrs: this.fieldProps,
                 props: {
                   value: this.preLvData[this.dataIndex],
+                  clearable: true,
                   ...this.fieldProps,
                 },
                 on: this.getFieldEvents(),
@@ -221,48 +222,48 @@ export default {
 
               return (
                 <div>
-                  {(!this.valueType || this.valueType === "input") && (
+                  {(!this.valueType || this.valueType === 'input') && (
                     <el-input {...p}>{renderScopedSlots()}</el-input>
                   )}
-                  {this.valueType === "input-number" && (
+                  {this.valueType === 'input-number' && (
                     <el-input-number {...p}>
                       {renderScopedSlots()}
                     </el-input-number>
                   )}
-                  {this.valueType === "select" && (
+                  {this.valueType === 'select' && (
                     <el-select {...p}>
                       {selectOptions()}
                       {renderScopedSlots()}
                     </el-select>
                   )}
-                  {this.valueType === "cascader" && (
+                  {this.valueType === 'cascader' && (
                     <el-cascader {...p}>{renderScopedSlots()}</el-cascader>
                   )}
-                  {this.valueType === "switch" && (
+                  {this.valueType === 'switch' && (
                     <el-switch {...p}>{renderScopedSlots()}</el-switch>
                   )}
-                  {this.valueType === "time-select" && (
+                  {this.valueType === 'time-select' && (
                     <el-time-select {...p}>
                       {renderScopedSlots()}
                     </el-time-select>
                   )}
-                  {this.valueType === "date-picker" && (
+                  {this.valueType === 'date-picker' && (
                     <el-date-picker {...p}>
                       {renderScopedSlots()}
                     </el-date-picker>
                   )}
-                  {this.valueType === "date-time-picker" && (
+                  {this.valueType === 'date-time-picker' && (
                     <el-date-picker {...p}>
                       {renderScopedSlots()}
                     </el-date-picker>
                   )}
-                  {this.valueType === "radio" && (
+                  {this.valueType === 'radio' && (
                     <el-radio {...p}>{renderScopedSlots()}</el-radio>
                   )}
-                  {this.valueType === "checkbox" && (
+                  {this.valueType === 'checkbox' && (
                     <el-checkbox {...p}>{renderScopedSlots()}</el-checkbox>
                   )}
-                  {this.valueType === "transfer" && (
+                  {this.valueType === 'transfer' && (
                     <el-transfer {...p}>{renderScopedSlots()}</el-transfer>
                   )}
                   {/*  {this.valueType === 'file' && (
@@ -273,7 +274,7 @@ export default {
                       >{renderScopedSlots()}</el-select>
                     )} */}
 
-                  {this.valueType === "group" &&
+                  {this.valueType === 'group' &&
                     (this.preLvData[this.dataIndex] || []).map((row, idx) => {
                       return (
                         <el-row
@@ -290,16 +291,16 @@ export default {
                                 <json2form-item
                                   key={
                                     this.dataIndex +
-                                    "." +
+                                    '.' +
                                     idx +
-                                    "." +
+                                    '.' +
                                     childItem.dataIndex
                                   }
                                   prop={
                                     (this.prop || this.dataIndex) +
-                                    "." +
+                                    '.' +
                                     idx +
-                                    "." +
+                                    '.' +
                                     childItem.dataIndex
                                   }
                                   vModel={row}
@@ -311,7 +312,7 @@ export default {
                                 ></json2form-item>
                               </el-col>
                             ) : (
-                              ""
+                              ''
                             );
                           })}
                         </el-row>
@@ -325,7 +326,7 @@ export default {
               if (this.item.dataRender) {
                 return this.item.dataRender(this.preLvData);
               } else {
-                if (this.valueType === "select") {
+                if (this.valueType === 'select') {
                   // 分组
                   if (this.options[0] && this.options[0].value === undefined) {
                     let label = this.emptyVal;
@@ -340,14 +341,14 @@ export default {
                   }
                   // 非分组
                   let opt = this.options.find(
-                    (el) => el.value === this.preLvData[this.dataIndex]
+                    (el) => el.value === this.preLvData[this.dataIndex],
                   );
                   return (
                     (opt && opt.label) ||
                     this.preLvData[this.dataIndex] ||
                     this.emptyVal
                   );
-                } else if (this.valueType === "file") {
+                } else if (this.valueType === 'file') {
                   return (
                     <el-button
                       type="text"
@@ -363,7 +364,7 @@ export default {
                       下载
                     </el-button>
                   );
-                } else if (this.valueType === "img") {
+                } else if (this.valueType === 'img') {
                   return this.preLvData[this.dataIndex] ? (
                     <el-image
                       class="json-form-item-img"
@@ -373,7 +374,7 @@ export default {
                   ) : (
                     this.emptyVal
                   );
-                } else if (this.valueType === "group") {
+                } else if (this.valueType === 'group') {
                   return (
                     <el-table data={this.preLvData[this.dataIndex] || []}>
                       {this.getGroupColumns().map((el) => {
@@ -384,7 +385,7 @@ export default {
                             </el-table-column>
                           );
                         }
-                        return "";
+                        return '';
                       })}
                       {/* */}
                     </el-table>
