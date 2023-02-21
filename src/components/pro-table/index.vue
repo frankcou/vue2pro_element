@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-21 11:09:10
+ * @LastEditTime: 2023-02-21 13:27:05
  * @LastEditors: zoufengfan
 -->
 
@@ -73,7 +73,7 @@ export default {
     /**可利用此属性对搜索栏高度进行调整，单位px */
     searchBarHeight: {
       type: Number,
-      default: 43 * 3, //包括搜索按钮位置，默认3行高度
+      default: 44 * 3 - 1, //包括搜索按钮位置，默认3行高度 + 1px border
       required: false,
     },
   },
@@ -269,7 +269,7 @@ export default {
                         >
                           重置
                         </el-button>
-
+                        {/* {this.formHeight}，{this.searchBarHeight} */}
                         {this.formHeight > this.searchBarHeight && (
                           <el-button
                             class="toggle_btn"
