@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2023-02-15 10:04:43
+ * @LastEditTime: 2023-02-20 15:01:57
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -167,14 +167,10 @@ export default {
 </script>
 
 <style scoped>
+/* 显示详情的时候 */
 ::v-deep [class*='el-col-'] {
   display: inline-block;
   vertical-align: top;
   float: none;
 }
 </style>
-<!-- <style>
-.el-form--inline .fitform-item {
-  display: block;
-}
-</style> -->
