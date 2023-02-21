@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2023-02-20 15:01:57
+ * @LastEditTime: 2023-02-21 13:45:59
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -125,7 +125,7 @@ export default {
           let model = {};
           this.columns.forEach((item) => {
             if (item.dataIndex) {
-              model[item.dataIndex] = this.model[item.dataIndex];
+              model[item.dataIndex] = this.model[item.dataIndex] || '';
             }
           });
           this.$set(this, 'model', model);
