@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2023-02-21 13:45:59
+ * @LastEditTime: 2023-02-23 17:58:41
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+const defVal = '';
 export default {
   name: 'pro-form',
   props: {
@@ -72,10 +73,15 @@ export default {
   },
   data() {
     return {
+      isMounted: false,
       model: {},
     };
   },
   computed: {
+    // 用于同时监听两个参数
+    columnsAndloading() {
+      return [this.columns, this.loading];
+    },
     isInline() {
       if (this.$attrs.inline === undefined) return true;
       return this.$attrs.inline;
@@ -98,69 +104,68 @@ export default {
     validateField(...args) {
       this.$refs['form'].validateField(...args);
     },
+    /**重置：表单第一次初始化的参数 */
     resetFields() {
       this.$refs['form'].resetFields();
-      // 处理transform参数
-      this.columns.forEach((item) => {
-        if (typeof item.transform === 'function') {
-          let object = item.transform(null);
-          for (const key in object) {
-            if (Object.hasOwnProperty.call(object, key)) {
-              const value = object[key];
-              this.$set(this.model, key, value);
-            }
-          }
+    },
+    /**清空表单 */
+    clearFields() {
+      let model = {};
+
+      for (const key in this.model) {
+        if (Object.hasOwnProperty.call(this.model, key)) {
+          model[key] = defVal;
         }
-      });
+      }
+      this.$set(this, 'model', model);
+      this.clearValidate();
     },
     clearValidate(fn) {
       this.$refs['form'].clearValidate(fn);
     },
   },
   watch: {
-    columns: {
-      deep: true,
-      handler(val) {
-        this.$nextTick(() => {
-          let model = {};
-          this.columns.forEach((item) => {
-            if (item.dataIndex) {
-              model[item.dataIndex] = this.model[item.dataIndex] || '';
-            }
-          });
-          this.$set(this, 'model', model);
-        });
-      },
-    },
-    loading: {
-      immediate: true,
-      handler(val, oldval) {
-        if (!val) {
-          this.$nextTick(() => {
-            console.log('pro-form init ');
-            // init
-            let model = {};
-            this.columns.forEach((item) => {
-              if (item.dataIndex) {
-                console.log(1);
-                model[item.dataIndex] =
-                  item.initialValue ||
-                  (this.initialValues
-                    ? this.initialValues[item.dataIndex]
-                    : undefined);
+    columnsAndloading([columns, loading], [columns_old, loading_old]) {
+      if (loading) return;
+      let model = {};
+      // 第一次改变数据————初始化数据
+      if (!loading && columns.length && !this.isMounted) {
+        console.log('form init', columns);
+        this.isMounted = true;
+        columns.forEach((item, idx) => {
+          if (item.dataIndex) {
+            model[item.dataIndex] =
+              item.initialValue !== undefined
+                ? item.initialValue
+                : this.initialValues[item.dataIndex] !== undefined
+                ? this.initialValues[item.dataIndex]
+                : defVal;
+
+            if (typeof item.transform === 'function') {
+              let object = item.transform(null);
+              for (const key in object) {
+                if (Object.hasOwnProperty.call(object, key)) {
+                  model[key] =
+                    this.initialValues[key] !== undefined
+                      ? this.initialValues[key]
+                      : defVal;
+                }
               }
-            });
-            if (this.initialValues) {
-              model = {
-                ...this.initialValues,
-                ...model,
-              };
             }
-            // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
-            this.$set(this, 'model', model);
-          });
-        }
-      },
+          }
+        });
+        // columns更新
+      } else if (!loading && columns.length && this.isMounted) {
+        console.log('update columns', columns);
+        columns.forEach((item) => {
+          if (item.dataIndex) {
+            model[item.dataIndex] = this.model[item.dataIndex];
+          }
+        });
+      }
+      console.log('model', model);
+      // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
+      this.$set(this, 'model', model);
     },
   },
 };

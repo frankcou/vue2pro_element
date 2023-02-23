@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-21 13:27:05
+ * @LastEditTime: 2023-02-23 17:57:08
  * @LastEditors: zoufengfan
 -->
 
@@ -127,8 +127,13 @@ export default {
       this.isOpen = false;
       this.findPage();
     },
-    //   点击重置表单
+    //  重置表单
     handleClear() {
+      this.$emit('clear');
+      this.$refs['pro-form'].clearFields();
+    },
+    // 清空表单
+    handleReset() {
       this.$emit('reset');
       this.$refs['pro-form'].resetFields();
     },
@@ -265,7 +270,7 @@ export default {
                         </el-button>
                         <el-button
                           size="small"
-                          vOn:click={() => this.handleClear()}
+                          vOn:click={() => this.handleReset()}
                         >
                           重置
                         </el-button>
