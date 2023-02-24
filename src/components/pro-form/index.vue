@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2023-02-23 17:58:41
+ * @LastEditTime: 2023-02-24 09:59:06
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -154,7 +154,7 @@ export default {
             }
           }
         });
-        // columns更新
+        // columns更新,获取最新字段
       } else if (!loading && columns.length && this.isMounted) {
         console.log('update columns', columns);
         columns.forEach((item) => {

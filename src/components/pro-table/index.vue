@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-23 17:57:08
+ * @LastEditTime: 2023-02-24 09:46:01
  * @LastEditors: zoufengfan
 -->
 
@@ -270,7 +270,7 @@ export default {
                         </el-button>
                         <el-button
                           size="small"
-                          vOn:click={() => this.handleReset()}
+                          vOn:click={() => this.handleClear()}
                         >
                           重置
                         </el-button>
