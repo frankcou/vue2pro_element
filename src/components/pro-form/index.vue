@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2023-02-24 09:59:06
+ * @LastEditTime: 2023-02-24 10:43:04
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -142,15 +142,8 @@ export default {
                 : defVal;
 
             if (typeof item.transform === 'function') {
-              let object = item.transform(null);
-              for (const key in object) {
-                if (Object.hasOwnProperty.call(object, key)) {
-                  model[key] =
-                    this.initialValues[key] !== undefined
-                      ? this.initialValues[key]
-                      : defVal;
-                }
-              }
+              let object = item.transform(model[item.dataIndex]);
+              Object.assign(model, object || {});
             }
           }
         });
