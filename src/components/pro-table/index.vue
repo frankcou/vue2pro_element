@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-24 09:46:01
+ * @LastEditTime: 2023-02-24 10:33:20
  * @LastEditors: zoufengfan
 -->
 
@@ -245,9 +245,11 @@ export default {
           {this.searchBarLoading || (
             <pro-form
               ref="pro-form"
-              class={`table_form ${this.isOpen ? 'open ' : ''}`}
-              style={`max-height:${
-                this.isOpen ? '1000px' : `${this.searchBarHeight}px`
+              class={`table_form`}
+              style={`height:${
+                this.isOpen
+                  ? `${this.formHeight}px`
+                  : `${this.searchBarHeight}px`
               }`}
               loading={this.searchBarLoading}
               columns={this.columns}
@@ -361,7 +363,7 @@ export default {
   border-bottom: 1px solid #efefef;
   box-sizing: border-box;
   overflow: hidden;
-  transition: max-height 0.5s ease-in-out 0.1s;
+  transition: height 0.3s ease-in-out 0s;
 }
 .search-bar-bottom {
   position: absolute;
