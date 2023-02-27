@@ -4,7 +4,6 @@
  * @LastEditTime: 2022-10-11 16:06:24
  * @LastEditors: zoufengfan
 -->
-    
 
 # vue2pro_element
 
@@ -47,6 +46,7 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props vue2pro_
           title: "title1",
           dataIndex: "a",
           formItemProps: { required: true },
+          dataRender:scope=><div vOn:click={()=>this.handleClick()}>{scope.row.a}<div>
         },
         {
           title: "title2",
@@ -67,6 +67,9 @@ npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props vue2pro_
       }
     },
     methods: {
+      handleClick(){
+        console.log('click!')
+      },
       findPage() {
         return new Promise((res) => {
           setTimeout(() => {
