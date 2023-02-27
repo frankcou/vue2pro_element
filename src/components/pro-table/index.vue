@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-24 10:33:20
+ * @LastEditTime: 2023-02-27 16:04:31
  * @LastEditors: zoufengfan
 -->
 
@@ -121,7 +121,8 @@ export default {
       return this.transformParams ? this.transformParams(params) : params;
     },
     //   点击搜索框
-    handleSearch() {
+    async handleSearch() {
+      await this.$nextTick();
       if (!this.canSearch(this.$refs['pro-form'].model)) return;
       this.currentPage = 1;
       this.isOpen = false;
@@ -139,36 +140,34 @@ export default {
     },
     // 获取分页数据
     findPage() {
-      return new Promise((res, rej) => {
+      return new Promise(async (res, rej) => {
         // nextTick为了防止没有获取最新的searchParams
-        this.$nextTick(() => {
-          this.$emit('search');
-          const params = this.getSearchParams();
-          this.tableLoading = true;
-          this.listPms(params)
-            .then((_res) => {
-              res(_res);
-              if (_res.code === 200) {
-                this.pageResult = _res.data;
-              } else {
-                rej(_res);
-                this.$message({
-                  type: 'error',
-                  message: _res.msg,
-                });
-              }
-            })
-            .catch((e) => {
-              rej(e);
+        this.$emit('search');
+        const params = await this.getSearchParams();
+        this.tableLoading = true;
+        this.listPms(params)
+          .then((_res) => {
+            res(_res);
+            if (_res.code === 200) {
+              this.pageResult = _res.data;
+            } else {
+              rej(_res);
               this.$message({
                 type: 'error',
-                message: e.msg || e.message,
+                message: _res.msg,
               });
-            })
-            .finally(() => {
-              this.tableLoading = false;
+            }
+          })
+          .catch((e) => {
+            rej(e);
+            this.$message({
+              type: 'error',
+              message: e.msg || e.message,
             });
-        });
+          })
+          .finally(() => {
+            this.tableLoading = false;
+          });
       });
     },
     handleSizeChange(val) {
@@ -311,7 +310,7 @@ export default {
           props={{
             border: true,
             on: {},
-            height: this.height ? '100%' : undefined,
+            height: this.height ? '500px' : undefined,
             ...this.tableProps,
           }}
           on={this.tableProps && this.tableProps.on}
