@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-27 16:04:31
+ * @LastEditTime: 2023-02-28 13:46:43
  * @LastEditors: zoufengfan
 -->
 
@@ -106,12 +106,14 @@ export default {
       this.$emit('toggle', this.isOpen);
     },
     // 搜索参数
-    getSearchParams() {
+    async getSearchParams() {
+      await this.$nextTick();
       let params = {
         params: this.$refs['pro-form'].model,
         pageNum: this.currentPage,
         pageSize: this.paginationAttr.pageSize,
       };
+      // console.log('getSearchParams', this.$refs['pro-form'].model);
       // 过滤
       this.columns.forEach((item) => {
         if (item.hideInForm) {

@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2023-02-24 10:43:04
+ * @LastEditTime: 2023-02-28 13:45:10
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -125,40 +125,50 @@ export default {
     },
   },
   watch: {
-    columnsAndloading([columns, loading], [columns_old, loading_old]) {
-      if (loading) return;
-      let model = {};
-      // 第一次改变数据————初始化数据
-      if (!loading && columns.length && !this.isMounted) {
-        console.log('form init', columns);
-        this.isMounted = true;
-        columns.forEach((item, idx) => {
-          if (item.dataIndex) {
-            model[item.dataIndex] =
-              item.initialValue !== undefined
-                ? item.initialValue
-                : this.initialValues[item.dataIndex] !== undefined
-                ? this.initialValues[item.dataIndex]
-                : defVal;
+    columnsAndloading: {
+      immediate: true,
+      deep: true,
+      handler(newVal, oldval) {
+        if (!newVal) return;
+        let [columns, loading] = newVal;
+        if (loading || !columns) return;
+        let model = {};
 
-            if (typeof item.transform === 'function') {
-              let object = item.transform(model[item.dataIndex]);
-              Object.assign(model, object || {});
+        // 第一次改变数据————初始化数据
+        if (!loading && columns.length && !this.isMounted) {
+          console.log('form init', columns);
+          console.log('initval', this.initialValues);
+          this.isMounted = true;
+          columns.forEach((item, idx) => {
+            if (item.dataIndex) {
+              model[item.dataIndex] =
+                item.initialValue !== undefined
+                  ? item.initialValue
+                  : this.initialValues[item.dataIndex] !== undefined
+                  ? this.initialValues[item.dataIndex]
+                  : defVal;
+
+              if (typeof item.transform === 'function') {
+                let object = item.transform(model[item.dataIndex]);
+                Object.assign(model, object || {});
+              }
             }
-          }
-        });
-        // columns更新,获取最新字段
-      } else if (!loading && columns.length && this.isMounted) {
-        console.log('update columns', columns);
-        columns.forEach((item) => {
-          if (item.dataIndex) {
-            model[item.dataIndex] = this.model[item.dataIndex];
-          }
-        });
-      }
-      console.log('model', model);
-      // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
-      this.$set(this, 'model', model);
+          });
+          this.$set(this, 'model', model);
+          console.log('model', model);
+          // columns更新,获取最新字段
+        } else if (!loading && columns.length && this.isMounted) {
+          console.log('update columns', columns);
+          columns.forEach((item) => {
+            if (item.dataIndex) {
+              model[item.dataIndex] = this.model[item.dataIndex];
+            }
+          });
+          this.$set(this, 'model', model);
+          console.log('model', model);
+        }
+        // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
+      },
     },
   },
 };
