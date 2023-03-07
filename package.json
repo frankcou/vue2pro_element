@@ -1,6 +1,6 @@
 {
   "name": "vue2pro_element",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "支持jsx的table/form封装,可通过json全部生成",
   "private": false,
   "scripts": {
