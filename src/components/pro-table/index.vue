@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-02-28 13:46:43
+ * @LastEditTime: 2023-03-07 13:31:07
  * @LastEditors: zoufengfan
 -->
 
@@ -75,6 +75,11 @@ export default {
       type: Number,
       default: 44 * 3 - 1, //包括搜索按钮位置，默认3行高度 + 1px border
       required: false,
+    },
+    /**form表单是否脱离文档流 */
+    formRenderType: {
+      type: String,
+      default: 'normal', // 'normal'|'abs'
     },
   },
   data() {
@@ -240,26 +245,43 @@ export default {
         {/* 搜索部分 */}
         <div
           class="search-bar"
-          style={`height:${this.searchBarHeight}px`}
           v-loading={this.searchBarLoading}
+          style={
+            this.formRenderType === 'abs'
+              ? `height:${this.searchBarHeight}px`
+              : ''
+          }
         >
           {this.searchBarLoading || (
             <pro-form
               ref="pro-form"
               class={`table_form`}
-              style={`height:${
-                this.isOpen
-                  ? `${this.formHeight}px`
-                  : `${this.searchBarHeight}px`
-              }`}
               loading={this.searchBarLoading}
               columns={this.columns}
               initialValues={this.initialValues}
               inline={false}
               label-position="left"
+              style={
+                (this.formRenderType === 'abs'
+                  ? `position: absolute;
+                      top: 0;
+                      left: 0;
+                      right: 0;`
+                  : '') +
+                `height:${
+                  this.isOpen
+                    ? `${this.formHeight}px`
+                    : `${this.searchBarHeight}px`
+                }`
+              }
             >
               <template slot="after">
-                <div class="search-bar-bottom clearfix">
+                <div
+                  class="search-bar-bottom clearfix"
+                  style={`${
+                    this.formRenderType === 'normal' ? '' : 'padding: 0 0;'
+                  }`}
+                >
                   <div class="fl">{this.$slots.searchBarBottom}</div>
                   <div class="search-btns fr">
                     {this.$slots.searchBtns || (
@@ -353,10 +375,10 @@ export default {
   padding: 10px 15px;
 }
 .table_form {
-  position: absolute;
+  /* position: absolute;
   top: 0;
   left: 0;
-  right: 0;
+  right: 0; */
   padding-bottom: 44px;
   background: #fff;
   border-radius: 0 0 5px 5px;
@@ -372,7 +394,7 @@ export default {
   left: 0;
   right: 0;
   background: #fff;
-  /* padding: 10px 0; */
+  padding: 10px 0;
   height: 44px;
 }
 ::v-deep .el-form-item {
