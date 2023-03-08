@@ -1,11 +1,11 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2023-03-08 15:41:42
+ * @LastEditTime: 2023-03-08 17:21:03
  * @LastEditors: zoufengfan
 -->
 <template>
-  <div v-loading="loading">
+  <div v-loading="shouldLoading ? loading : false">
     <el-form
       v-if="isCreated"
       class="pro-form"
@@ -65,23 +65,34 @@ const defVal = '';
 export default {
   name: 'pro-form',
   props: {
+    /** 要不要loading动效 */
+    shouldLoading: {
+      default: true,
+      type: Boolean,
+    },
+    /**用于监听何时columns的数据完整 */
     loading: {
       default: false,
       type: Boolean,
     },
+    /**字段配置 */
     columns: {
       type: Array,
       required: true,
     },
+    /**是否可编辑 */
     editable: {
       type: Boolean,
       default: true,
     },
+    /**初始值 */
     initialValues: Object,
   },
   data() {
     return {
-      isCreated: false, //表单初始数据是否完成赋值
+      /** 表示表单初始数据是否完成赋值 */
+      isCreated: false,
+      /** 表单值 */
       model: {},
     };
   },
