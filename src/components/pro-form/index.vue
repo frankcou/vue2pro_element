@@ -1,55 +1,63 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-13 12:11:00
- * @LastEditTime: 2023-02-28 13:45:10
+ * @LastEditTime: 2023-03-08 15:41:42
  * @LastEditors: zoufengfan
 -->
 <template>
-  <el-form
-    class="pro-form"
-    ref="form"
-    @submit.native.prevent
-    v-loading="loading"
-    v-bind="$attrs"
-    v-on="$listeners"
-    :model="model"
-    :inline="isInline"
-    :label-suffix="editable ? '' : ':'"
-    :hide-required-asterisk="!editable"
-  >
-    <slot name="before"></slot>
-    <template v-if="!isInline">
-      <json2form-item
-        v-for="item in columns"
-        :key="item.dataIndex"
-        v-model="model"
-        :item="{ ...item, editable: isEditable(item) }"
-      ></json2form-item>
-    </template>
-    <template v-else>
-      <el-row align="top" :gutter="10" style="margin-left: 0; margin-right: 0">
-        <el-col
+  <div v-loading="loading">
+    <el-form
+      v-if="isCreated"
+      class="pro-form"
+      ref="form"
+      @submit.native.prevent
+      v-bind="$attrs"
+      v-on="$listeners"
+      :model="model"
+      :inline="isInline"
+      :label-suffix="editable ? '' : ':'"
+      :hide-required-asterisk="!editable"
+    >
+      <slot name="before"></slot>
+      <template v-if="!isInline">
+        <json2form-item
           v-for="item in columns"
           :key="item.dataIndex"
-          v-bind="item.colProps || { span: 12 }"
-          v-show="!getObj(item.hideInForm) && (isEditable(item) || item.title)"
+          v-model="model"
+          :item="{ ...item, editable: isEditable(item) }"
+        ></json2form-item>
+      </template>
+      <template v-else>
+        <el-row
+          align="top"
+          :gutter="10"
+          style="margin-left: 0; margin-right: 0"
         >
-          <!-- :contentWidth="
+          <el-col
+            v-for="item in columns"
+            :key="item.dataIndex"
+            v-bind="item.colProps || { span: 12 }"
+            v-show="
+              !getObj(item.hideInForm) && (isEditable(item) || item.title)
+            "
+          >
+            <!-- :contentWidth="
               $attrs['label-width']
                 ? 'calc(100% - ' + $attrs['label-width'] + ')'
                 : ''
             " -->
-          <!-- :class="setFitClass" -->
+            <!-- :class="setFitClass" -->
 
-          <json2form-item
-            v-model="model"
-            :item="{ ...item, editable: isEditable(item) }"
-          ></json2form-item>
-        </el-col>
-      </el-row>
-    </template>
-    <slot name="after"></slot>
-  </el-form>
+            <json2form-item
+              v-model="model"
+              :item="{ ...item, editable: isEditable(item) }"
+            ></json2form-item>
+          </el-col>
+        </el-row>
+      </template>
+      <slot name="after"></slot>
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -73,14 +81,14 @@ export default {
   },
   data() {
     return {
-      isMounted: false,
+      isCreated: false, //表单初始数据是否完成赋值
       model: {},
     };
   },
   computed: {
     // 用于同时监听两个参数
     columnsAndloading() {
-      return [this.columns, this.loading];
+      return { columns: this.columns, loading: this.loading };
     },
     isInline() {
       if (this.$attrs.inline === undefined) return true;
@@ -130,21 +138,23 @@ export default {
       deep: true,
       handler(newVal, oldval) {
         if (!newVal) return;
-        let [columns, loading] = newVal;
+        let { columns, loading } = newVal;
         if (loading || !columns) return;
         let model = {};
 
         // 第一次改变数据————初始化数据
-        if (!loading && columns.length && !this.isMounted) {
+        if (!loading && columns.length && !this.isCreated) {
           console.log('form init', columns);
           console.log('initval', this.initialValues);
-          this.isMounted = true;
+          this.isCreated = true;
           columns.forEach((item, idx) => {
             if (item.dataIndex) {
               model[item.dataIndex] =
                 item.initialValue !== undefined
                   ? item.initialValue
-                  : this.initialValues[item.dataIndex] !== undefined
+                  : ![undefined, null].includes(
+                      this.initialValues && this.initialValues[item.dataIndex],
+                    )
                   ? this.initialValues[item.dataIndex]
                   : defVal;
 
@@ -157,7 +167,7 @@ export default {
           this.$set(this, 'model', model);
           console.log('model', model);
           // columns更新,获取最新字段
-        } else if (!loading && columns.length && this.isMounted) {
+        } else if (!loading && columns.length && this.isCreated) {
           console.log('update columns', columns);
           columns.forEach((item) => {
             if (item.dataIndex) {
