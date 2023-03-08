@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-15 09:56:10
- * @LastEditTime: 2022-07-05 09:17:59
+ * @LastEditTime: 2023-03-08 17:16:35
  * @LastEditors: zoufengfan
 -->
 <template>
@@ -12,20 +12,23 @@
     :visible.sync="isVisible"
     :before-close="handleClose"
   >
-    <slot name="formTop"></slot>
+    <div v-loading="loading">
+      <slot name="formTop"></slot>
 
-    <slot>
-      <pro-form
-        ref="proform"
-        :columns="columns"
-        v-bind="formProps"
-        v-on="formProps && formProps.on"
-        :loading="loading"
-        v-if="isVisible"
-      ></pro-form>
-    </slot>
+      <slot>
+        <pro-form
+          ref="proform"
+          :shouldLoading="false"
+          :columns="columns"
+          :loading="loading"
+          v-bind="formProps"
+          v-on="formProps && formProps.on"
+          v-if="isVisible"
+        ></pro-form>
+      </slot>
 
-    <slot name="formBottom"></slot>
+      <slot name="formBottom"></slot>
+    </div>
 
     <div slot="footer" v-if="editable">
       <slot name="footer">
@@ -45,7 +48,7 @@
 
 <script>
 export default {
-  name: "dialog-form",
+  name: 'dialog-form',
   props: {
     value: Boolean,
     title: String,
@@ -55,8 +58,8 @@ export default {
     },
     dialogProps: Object,
     formProps: Object,
-    closeText: { type: String, default: "取 消" },
-    okText: { type: String, default: "提 交" },
+    closeText: { type: String, default: '取 消' },
+    okText: { type: String, default: '提 交' },
     onFinish: {
       type: Function, //()=>Promise<boolean>
       default: (params) => true,
@@ -79,7 +82,7 @@ export default {
         return this.value;
       },
       set(v) {
-        this.$emit("input", v);
+        this.$emit('input', v);
       },
     },
     editable() {
@@ -103,7 +106,7 @@ export default {
         });
       } else {
         if (this.editable) {
-          this.$confirm("确认关闭？")
+          this.$confirm('确认关闭？')
             .then((_) => {
               this.isVisible = false;
             })
@@ -124,7 +127,7 @@ export default {
             this.btnLoading = false;
           });
       };
-      const form = slotFormRef || this.$refs["proform"];
+      const form = slotFormRef || this.$refs['proform'];
       form.validate((_bool, obj) => {
         if (_bool) {
           if (this.okConfirm) {
@@ -134,7 +137,7 @@ export default {
               this.btnLoading = false;
             }
           } else {
-            this.$confirm("确认提交？")
+            this.$confirm('确认提交？')
               .then(continueFn)
               .catch(() => {
                 this.btnLoading = false;
