@@ -1,7 +1,7 @@
 <!--
  * @Author: zoufengfan
  * @Date: 2022-06-01 15:11:47
- * @LastEditTime: 2023-03-07 13:31:07
+ * @LastEditTime: 2023-03-10 09:36:57
  * @LastEditors: zoufengfan
 -->
 
@@ -132,7 +132,7 @@ export default {
       await this.$nextTick();
       if (!this.canSearch(this.$refs['pro-form'].model)) return;
       this.currentPage = 1;
-      this.isOpen = false;
+      if (this.formRenderType === 'abs') this.isOpen = false;
       this.findPage();
     },
     //  重置表单
