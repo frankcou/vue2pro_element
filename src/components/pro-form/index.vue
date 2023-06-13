@@ -5,47 +5,42 @@
  * @LastEditors: zoufengfan
 -->
 <template>
-  <div v-loading="shouldLoading ? loading : false">
-    <el-form
-      v-if="isCreated"
-      class="pro-form"
-      ref="form"
-      @submit.native.prevent
-      v-bind="$attrs"
-      v-on="$listeners"
-      :model="model"
-      :inline="isInline"
-      :label-suffix="editable ? '' : ':'"
-      :hide-required-asterisk="!editable"
-    >
-      <slot name="before"></slot>
-      <template v-if="!isInline">
+  <div v-loading="shouldLoading ? loading : false" v-if="!isCreated"></div>
+  <el-form
+    v-else
+    class="pro-form"
+    ref="form"
+    @submit.native.prevent
+    v-bind="$attrs"
+    v-on="$listeners"
+    :model="model"
+    :inline="isInline"
+    :label-suffix="editable ? '' : ':'"
+    :hide-required-asterisk="!editable"
+  >
+    <slot name="before"></slot>
+    <template v-if="!isInline">
+      <json2form-item
+        v-for="item in columns"
+        :key="`${item.dataIndex} ${item.title}`"
+        v-model="model"
+        :item="{ ...item, editable: isEditable(item) }"
+      ></json2form-item>
+    </template>
+    <template v-else>
+      <el-row align="top" :gutter="10" style="margin-left: 0; margin-right: 0">
         <json2form-item
           v-for="item in columns"
           :key="`${item.dataIndex} ${item.title}`"
           v-model="model"
           :item="{ ...item, editable: isEditable(item) }"
+          inline
         ></json2form-item>
-      </template>
-      <template v-else>
-        <el-row
-          align="top"
-          :gutter="10"
-          style="margin-left: 0; margin-right: 0"
-        >
-          <json2form-item
-            v-for="item in columns"
-            :key="`${item.dataIndex} ${item.title}`"
-            v-model="model"
-            :item="{ ...item, editable: isEditable(item) }"
-            inline
-          ></json2form-item>
-          <!-- </el-col> -->
-        </el-row>
-      </template>
-      <slot name="after"></slot>
-    </el-form>
-  </div>
+        <!-- </el-col> -->
+      </el-row>
+    </template>
+    <slot name="after"></slot>
+  </el-form>
 </template>
 
 <script>

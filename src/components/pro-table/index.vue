@@ -220,8 +220,7 @@ export default {
           //   this.$refs['pro-form'].$el.scrollHeight,
           // );
           if (this.$refs['pro-form'].$el) {
-            this.formHeight =
-              this.$refs['pro-form'].$el.children[0].scrollHeight;
+            this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
           }
         });
       },
@@ -230,8 +229,9 @@ export default {
 
   mounted() {
     window.onresize = debounce(() => {
+      // console.log(this.$refs['pro-form'].$el.scrollHeight);
       if (this.$refs['pro-form'].$el) {
-        this.formHeight = this.$refs['pro-form'].$el.children[0].scrollHeight;
+        this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
       }
     }, 300);
   },
