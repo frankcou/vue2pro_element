@@ -33,15 +33,19 @@ export default {
     },
     //
     /**
-     * 列表请求,返回Promise的function，返回格式为
-     {
-        code: 200,
-        data: {
-            content: [{}],
-            totalSize: 222,
-        },
-        msg: 'msg'
-      }
+     * 列表请求,返回Promise的function，返回格式为 
+     { 
+        code: 200, 
+        data: { 
+            content: [{}], 
+            totalSize: 222, 
+        }, 
+        msg: 'msg' 
+      } 
+      或者直接返回 { 
+        content: [{}], 
+        totalSize: 222, 
+      } 
      */
     listPms: {
       type: Function,
@@ -154,15 +158,19 @@ export default {
         this.tableLoading = true;
         this.listPms(params)
           .then((_res) => {
-            res(_res);
-            if (_res.code === 200) {
-              this.pageResult = _res.data;
+            if (_res.code !== undefined) {
+              res(_res);
+              if (_res.code === 200) {
+                this.pageResult = _res.data;
+              } else {
+                rej(_res);
+                this.$message({
+                  type: 'error',
+                  message: _res.msg,
+                });
+              }
             } else {
-              rej(_res);
-              this.$message({
-                type: 'error',
-                message: _res.msg,
-              });
+              this.pageResult = _res;
             }
           })
           .catch((e) => {
