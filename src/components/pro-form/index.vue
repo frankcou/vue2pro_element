@@ -198,12 +198,6 @@ export default {
         // 这里的赋值需要用到$set，因为组件初始化的时候form没有二级对象，没有进行双向绑定
       },
     },
-    loading(...args) {
-      console.log('loading', args);
-    },
-    columns(...args) {
-      console.log('columns', args);
-    },
   },
 };
 </script>
