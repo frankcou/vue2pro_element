@@ -21,7 +21,7 @@
       <slot name="before"></slot>
       <template v-if="!isInline">
         <json2form-item
-          v-for="item in columns"
+          v-for="item in columnsFilterShow"
           :key="item.dataIndex"
           v-model="model"
           :item="{ ...item, editable: isEditable(item) }"
@@ -34,13 +34,13 @@
           style="margin-left: 0; margin-right: 0"
         >
           <el-col
-            v-for="item in columns"
+            v-for="item in columnsFilterShow"
             :key="item.dataIndex"
             v-bind="item.colProps || { span: 12 }"
-            v-show="
-              !getObj(item.hideInForm) && (isEditable(item) || item.title)
-            "
           >
+            <!-- v-show="
+              !getObj(item.hideInForm) && (isEditable(item) || item.title)
+            " -->
             <!-- :contentWidth="
               $attrs['label-width']
                 ? 'calc(100% - ' + $attrs['label-width'] + ')'
@@ -97,9 +97,16 @@ export default {
     };
   },
   computed: {
+    columnsFilterShow() {
+      return this.columns.filter((item) => {
+        return (
+          !this.getObj(item.hideInForm) && (this.isEditable(item) || item.title)
+        );
+      });
+    },
     // 用于同时监听两个参数
     columnsAndloading() {
-      return { columns: this.columns, loading: this.loading };
+      return { columns: this.columnsFilterShow, loading: this.loading };
     },
     isInline() {
       if (this.$attrs.inline === undefined) return true;
