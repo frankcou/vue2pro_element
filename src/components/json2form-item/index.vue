@@ -6,8 +6,28 @@
 -->
 
 <script>
+// import { ElTooltip } from 'element-ui';
+const WrapLayout = {
+  props: { type: String, errMsg: String },
+  render: function (h) {
+    return this.type === 'pop' && this.errMsg ? (
+      <el-tooltip
+        {...this.$attrs}
+        content={this.errMsg}
+        placement="top"
+        effect="light"
+      >
+        {this.$slots.default}
+      </el-tooltip>
+    ) : (
+      <div>{this.$slots.default}</div>
+    );
+  },
+};
+
 export default {
   name: 'json2form-item',
+  components: { WrapLayout },
   props: {
     // json配置
     item: {
@@ -23,6 +43,12 @@ export default {
     prop: String,
     // 用于设置el-form-item__content的宽度
     // contentWidth: String,d
+    popErrMsg: Boolean,
+  },
+  data() {
+    return {
+      errMsg: '',
+    };
   },
   inject: ['elForm'],
   computed: {
@@ -35,9 +61,11 @@ export default {
       },
     },
     rowIndex() {
-      let propArr = (this.prop || '').split('.');
-      propArr.length -= 1;
-      return propArr[propArr.length - 1];
+      if (typeof this.prop === 'string') {
+        const idx = this.prop.replace(/.+\.(\d+)\.\w+$/, '$1');
+        return /^\d+$/.test(idx) ? idx : null;
+      }
+      return null;
     },
     hideInForm() {
       return this.getObj(this.item.hideInForm);
@@ -49,7 +77,7 @@ export default {
       return this.getObj(this.item.formItemProps);
     },
     scopedSlots() {
-      return this.getObj(this.item.scopedSlots, this.rowIndex);
+      return this.getObj(this.item.scopedSlots);
     },
     editable() {
       return this.item.editable === undefined ? true : this.item.editable;
@@ -58,10 +86,10 @@ export default {
       return this.getObj(this.item.options) || [];
     },
     dataIndex() {
-      return this.item.dataIndex;
+      return this.getObj(this.item.dataIndex);
     },
     valueType() {
-      return this.item.valueType;
+      return this.getObj(this.item.valueType);
     },
     required() {
       return (
@@ -72,11 +100,12 @@ export default {
     },
     rules() {
       return (
-        (this.formItemProps && this.formItemProps.rules) || this.item.rules
+        (this.formItemProps && this.formItemProps.rules) ||
+        this.getObj(this.item.rules)
       );
     },
     emptyVal() {
-      return this.item.title ? '-' : '';
+      return this.getObj(this.item.title) ? '-' : '';
     },
     renderDefVal() {
       return this.preLvData[this.dataIndex] === null ||
@@ -91,7 +120,13 @@ export default {
     },
     getObj(obj, ...args) {
       if (obj && obj.constructor === Function)
-        return obj(this.preLvData, ...args);
+        return obj(
+          this.preLvData,
+          this.elForm.model,
+          this.prop,
+          this.rowIndex,
+          ...args,
+        );
       else return obj;
     },
     getFieldEvents() {
@@ -149,11 +184,7 @@ export default {
 
     // 完全自定义，为了方便定义多维数据
     if (this.editable && this.item.formItemRender) {
-      return this.item.formItemRender(
-        this.preLvData,
-        this.elForm.model,
-        this.prop,
-      );
+      return this.getObj(this.item.formItemRender);
     }
 
     // 正常情况
@@ -169,104 +200,129 @@ export default {
             this.valueType === 'group' &&
             (!this.preLvData[this.dataIndex] ||
               !this.preLvData[this.dataIndex].length),
+          popErrMsg: this.popErrMsg,
         }}
         label={this.item.title}
         props={{
           prop: this.prop || this.dataIndex,
-          ...this.formItemProps,
+          ...(this.formItemProps || {}),
           rules: this.rules,
           required: this.required,
         }}
-      >
-        {this.editable
-          ? // 编辑模式
-            (() => {
-              let p = {
-                attrs: this.fieldProps,
-                props: {
-                  value: this.preLvData[this.dataIndex],
-                  clearable: true,
-                  ...this.fieldProps,
-                },
-                on: this.getFieldEvents(),
-              };
-              // select 的 options
-              let selectOptions = () => {
-                // 分组的options
-                if (this.options[0] && this.options[0].value === undefined) {
-                  return (
-                    <div>
-                      {this.options.map((group) => (
-                        <el-option-group key={group.label} props={group}>
+        scopedSlots={{
+          error: ({ error }) => {
+            this.errMsg = error;
+            return this.popErrMsg ? '' : undefined;
+          },
+          default: () => {
+            return this.editable
+              ? // 编辑模式
+                (() => {
+                  let p = {
+                    attrs: this.fieldProps,
+                    props: {
+                      value: this.preLvData[this.dataIndex],
+                      clearable: true,
+                      ...this.fieldProps,
+                    },
+                    on: this.getFieldEvents(),
+                  };
+                  // select 的 options
+                  let selectOptions = () => {
+                    // 分组的options
+                    if (
+                      this.options[0] &&
+                      this.options[0].value === undefined
+                    ) {
+                      return (
+                        <div>
+                          {this.options.map((group) => (
+                            <el-option-group key={group.label} props={group}>
+                              <el-option
+                                key={item.key || item.value}
+                                props={item}
+                              ></el-option>
+                            </el-option-group>
+                          ))}
+                        </div>
+                      );
+                    }
+                    // 非分组的options
+                    return (
+                      <div>
+                        {this.options.map((item) => (
                           <el-option
                             key={item.key || item.value}
                             props={item}
                           ></el-option>
-                        </el-option-group>
-                      ))}
-                    </div>
-                  );
-                }
-                // 非分组的options
-                return (
-                  <div>
-                    {this.options.map((item) => (
-                      <el-option
-                        key={item.key || item.value}
-                        props={item}
-                      ></el-option>
-                    ))}
-                  </div>
-                );
-              };
+                        ))}
+                      </div>
+                    );
+                  };
 
-              return (
-                <div>
-                  {(!this.valueType || this.valueType === 'input') && (
-                    <el-input {...p}>{renderScopedSlots()}</el-input>
-                  )}
-                  {this.valueType === 'input-number' && (
-                    <el-input-number {...p}>
-                      {renderScopedSlots()}
-                    </el-input-number>
-                  )}
-                  {this.valueType === 'select' && (
-                    <el-select {...p}>
-                      {selectOptions()}
-                      {renderScopedSlots()}
-                    </el-select>
-                  )}
-                  {this.valueType === 'cascader' && (
-                    <el-cascader {...p}>{renderScopedSlots()}</el-cascader>
-                  )}
-                  {this.valueType === 'switch' && (
-                    <el-switch {...p}>{renderScopedSlots()}</el-switch>
-                  )}
-                  {this.valueType === 'time-select' && (
-                    <el-time-select {...p}>
-                      {renderScopedSlots()}
-                    </el-time-select>
-                  )}
-                  {this.valueType === 'date-picker' && (
-                    <el-date-picker {...p}>
-                      {renderScopedSlots()}
-                    </el-date-picker>
-                  )}
-                  {this.valueType === 'date-time-picker' && (
-                    <el-date-picker {...p}>
-                      {renderScopedSlots()}
-                    </el-date-picker>
-                  )}
-                  {this.valueType === 'radio' && (
-                    <el-radio {...p}>{renderScopedSlots()}</el-radio>
-                  )}
-                  {this.valueType === 'checkbox' && (
-                    <el-checkbox {...p}>{renderScopedSlots()}</el-checkbox>
-                  )}
-                  {this.valueType === 'transfer' && (
-                    <el-transfer {...p}>{renderScopedSlots()}</el-transfer>
-                  )}
-                  {/*  {this.valueType === 'file' && (
+                  return (
+                    <WrapLayout
+                      type={this.popErrMsg ? 'pop' : 'normal'}
+                      errMsg={this.errMsg}
+                    >
+                      {(!this.valueType || this.valueType === 'input') && (
+                        <el-input placeholder="请输入" {...p}>
+                          {renderScopedSlots()}
+                        </el-input>
+                      )}
+
+                      {this.valueType === 'input-number' && (
+                        <el-input-number placeholder="请输入" {...p}>
+                          {renderScopedSlots()}
+                        </el-input-number>
+                      )}
+                      {this.valueType === 'select' && (
+                        <el-select placeholder="请选择" {...p}>
+                          {selectOptions()}
+                          {renderScopedSlots()}
+                        </el-select>
+                      )}
+                      {this.valueType === 'cascader' && (
+                        <el-cascader placeholder="请选择" {...p}>
+                          {renderScopedSlots()}
+                        </el-cascader>
+                      )}
+                      {this.valueType === 'switch' && (
+                        <el-switch placeholder="请选择" {...p}>
+                          {renderScopedSlots()}
+                        </el-switch>
+                      )}
+                      {this.valueType === 'time-select' && (
+                        <el-time-select placeholder="请选择" {...p}>
+                          {renderScopedSlots()}
+                        </el-time-select>
+                      )}
+                      {this.valueType === 'date-picker' && (
+                        <el-date-picker placeholder="请选择" {...p}>
+                          {renderScopedSlots()}
+                        </el-date-picker>
+                      )}
+                      {this.valueType === 'date-time-picker' && (
+                        <el-date-picker placeholder="请选择" {...p}>
+                          {renderScopedSlots()}
+                        </el-date-picker>
+                      )}
+                      {this.valueType === 'radio' && (
+                        <el-radio placeholder="请选择" {...p}>
+                          {renderScopedSlots()}
+                        </el-radio>
+                      )}
+                      {this.valueType === 'checkbox' && (
+                        <el-checkbox placeholder="请选择" {...p}>
+                          {renderScopedSlots()}
+                        </el-checkbox>
+                      )}
+                      {this.valueType === 'transfer' && (
+                        <el-transfer placeholder="请选择" {...p}>
+                          {renderScopedSlots()}
+                        </el-transfer>
+                      )}
+                      {/*  {this.valueType === 'file' && (
                       <el-select
                       >{renderScopedSlots()}</el-select>
                     )}{this.valueType === 'img' && (
@@ -274,123 +330,198 @@ export default {
                       >{renderScopedSlots()}</el-select>
                     )} */}
 
-                  {this.valueType === 'group' &&
-                    (this.preLvData[this.dataIndex] || []).map((row, idx) => {
-                      return (
-                        <el-row
-                          align="top"
-                          gutter={10}
-                          style="margin-left: 0; margin-right: 0"
-                        >
-                          {this.getGroupColumns(row, idx).map((childItem) => {
-                            return !this.getObj(childItem.hideInForm) ? (
-                              <el-col
-                                key={childItem.dataIndex}
-                                props={childItem.colProps || { span: 12 }}
-                              >
-                                <json2form-item
-                                  key={
-                                    this.dataIndex +
-                                    '.' +
-                                    idx +
-                                    '.' +
-                                    childItem.dataIndex
-                                  }
-                                  prop={
-                                    (this.prop || this.dataIndex) +
-                                    '.' +
-                                    idx +
-                                    '.' +
-                                    childItem.dataIndex
-                                  }
-                                  vModel={row}
-                                  item={{
-                                    ...childItem,
-                                    editable:
-                                      childItem.editable || this.editable,
+                      {this.valueType === 'group' &&
+                        /* (
+                        <el-table data={this.preLvData[this.dataIndex] || []}>
+                          {this.getGroupColumns().map((el) => {
+                            if (el.title) {
+                              return (
+                                <el-table-column
+                                  label={el.title}
+                                  key={el.title}
+                                  scopedSlots={{
+                                    default: ({ row, column, $index }) => {
+                                      return (
+                                        <json2form-item
+                                          key={
+                                            this.dataIndex +
+                                            '.' +
+                                            $index +
+                                            '.' +
+                                            el.dataIndex
+                                          }
+                                          prop={
+                                            (this.prop || this.dataIndex) +
+                                            '.' +
+                                            $index +
+                                            '.' +
+                                            el.dataIndex
+                                          }
+                                          vModel={row}
+                                          item={{
+                                            ...el,
+                                            editable:
+                                              el.editable || this.editable,
+                                            formItemProps: {
+                                              ...el.formItemProps,
+                                              labelWidth: '0px',
+                                            },
+                                            title: '',
+                                          }}
+                                          popErrMsg
+                                        ></json2form-item>
+                                      );
+                                    },
                                   }}
-                                ></json2form-item>
-                              </el-col>
-                            ) : (
-                              ''
-                            );
+                                />
+                              );
+                            }
+                            return '';
                           })}
-                        </el-row>
+                          <el-table-column
+                            label="操作"
+                            scopedSlots={{
+                              default: ({ row, column, $index }) => (
+                                <el-button type="error">删除</el-button>
+                              ),
+                            }}
+                          />
+                        </el-table>
+                      ) */
+                        (this.preLvData[this.dataIndex] || []).map(
+                          (row, idx) => {
+                            return (
+                              <el-row
+                                align="top"
+                                gutter={10}
+                                style="margin-left: 0; margin-right: 0"
+                              >
+                                {this.getGroupColumns(row, idx).map(
+                                  (childItem) => {
+                                    return !this.getObj(
+                                      childItem.hideInForm,
+                                    ) ? (
+                                      <el-col
+                                        key={childItem.dataIndex}
+                                        props={
+                                          childItem.colProps || { span: 12 }
+                                        }
+                                      >
+                                        <json2form-item
+                                          key={
+                                            this.dataIndex +
+                                            '.' +
+                                            idx +
+                                            '.' +
+                                            childItem.dataIndex
+                                          }
+                                          prop={
+                                            (this.prop || this.dataIndex) +
+                                            '.' +
+                                            idx +
+                                            '.' +
+                                            childItem.dataIndex
+                                          }
+                                          vModel={row}
+                                          item={{
+                                            ...childItem,
+                                            editable:
+                                              childItem.editable ||
+                                              this.editable,
+                                          }}
+                                        ></json2form-item>
+                                      </el-col>
+                                    ) : (
+                                      ''
+                                    );
+                                  },
+                                )}
+                              </el-row>
+                            );
+                          },
+                        )}
+                    </WrapLayout>
+                  );
+                })()
+              : // 阅读模式
+                (() => {
+                  if (this.item.dataRender) {
+                    return this.item.dataRender(this.preLvData);
+                  } else {
+                    if (this.valueType === 'select') {
+                      // 分组
+                      if (
+                        this.options[0] &&
+                        this.options[0].value === undefined
+                      ) {
+                        let label = this.emptyVal;
+                        this.options.forEach((el) => {
+                          el.options.forEach((_el) => {
+                            if (_el.value === this.preLvData[this.dataIndex]) {
+                              label = _el.label;
+                            }
+                          });
+                        });
+                        return label;
+                      }
+                      // 非分组
+                      let opt = this.options.find(
+                        (el) => el.value === this.preLvData[this.dataIndex],
                       );
-                    })}
-                </div>
-              );
-            })()
-          : // 阅读模式
-            (() => {
-              if (this.item.dataRender) {
-                return this.item.dataRender(this.preLvData);
-              } else {
-                if (this.valueType === 'select') {
-                  // 分组
-                  if (this.options[0] && this.options[0].value === undefined) {
-                    let label = this.emptyVal;
-                    this.options.forEach((el) => {
-                      el.options.forEach((_el) => {
-                        if (_el.value === this.preLvData[this.dataIndex]) {
-                          label = _el.label;
-                        }
-                      });
-                    });
-                    return label;
+                      return (opt && opt.label) || this.renderDefVal;
+                    } else if (this.valueType === 'file') {
+                      return (
+                        <el-button
+                          type="text"
+                          disabled={!this.preLvData[this.dataIndex]}
+                          on={{
+                            click: () => {
+                              const newTab = window.open();
+                              newTab.opener = null;
+                              newTab.location.href =
+                                this.preLvData[this.dataIndex];
+                            },
+                          }}
+                        >
+                          下载
+                        </el-button>
+                      );
+                    } else if (this.valueType === 'img') {
+                      return this.preLvData[this.dataIndex] ? (
+                        <el-image
+                          class="json-form-item-img"
+                          src={this.preLvData[this.dataIndex]}
+                          preview-src-list={[this.preLvData[this.dataIndex]]}
+                        ></el-image>
+                      ) : (
+                        this.emptyVal
+                      );
+                    } else if (this.valueType === 'group') {
+                      return (
+                        <el-table data={this.preLvData[this.dataIndex] || []}>
+                          {this.getGroupColumns().map((el) => {
+                            if (el.title) {
+                              return (
+                                <el-table-column
+                                  label={el.title}
+                                  key={el.title}
+                                >
+                                  {this.renderDefVal}
+                                </el-table-column>
+                              );
+                            }
+                            return '';
+                          })}
+                          {/* */}
+                        </el-table>
+                      );
+                    }
+                    return this.renderDefVal;
                   }
-                  // 非分组
-                  let opt = this.options.find(
-                    (el) => el.value === this.preLvData[this.dataIndex],
-                  );
-                  return (opt && opt.label) || this.renderDefVal;
-                } else if (this.valueType === 'file') {
-                  return (
-                    <el-button
-                      type="text"
-                      disabled={!this.preLvData[this.dataIndex]}
-                      on={{
-                        click: () => {
-                          const newTab = window.open();
-                          newTab.opener = null;
-                          newTab.location.href = this.preLvData[this.dataIndex];
-                        },
-                      }}
-                    >
-                      下载
-                    </el-button>
-                  );
-                } else if (this.valueType === 'img') {
-                  return this.preLvData[this.dataIndex] ? (
-                    <el-image
-                      class="json-form-item-img"
-                      src={this.preLvData[this.dataIndex]}
-                      preview-src-list={[this.preLvData[this.dataIndex]]}
-                    ></el-image>
-                  ) : (
-                    this.emptyVal
-                  );
-                } else if (this.valueType === 'group') {
-                  return (
-                    <el-table data={this.preLvData[this.dataIndex] || []}>
-                      {this.getGroupColumns().map((el) => {
-                        if (el.title) {
-                          return (
-                            <el-table-column label={el.title} key={el.title}>
-                              {this.renderDefVal}
-                            </el-table-column>
-                          );
-                        }
-                        return '';
-                      })}
-                      {/* */}
-                    </el-table>
-                  );
-                }
-                return this.renderDefVal;
-              }
-            })()}
-      </el-form-item>
+                })();
+          },
+        }}
+      ></el-form-item>
     );
   },
 };
@@ -414,10 +545,10 @@ export default {
   padding-top: 15px;
   border: 1px dashed #dcdfe6;
 }
-/* .group_item.group_item-hidden > ::v-deep .el-form-item__content {
-  padding-top: 15px;
-  border: 1px dashed #dcdfe6;
-} */
+/* 校验的错误以hover弹出的方式显示，需要隐藏原有的位置 */
+.json2form-item.is_editable.popErrMsg {
+  margin: 0;
+}
 .json2form-item .el-select {
   width: 100%;
 }
