@@ -21,8 +21,8 @@
       <slot name="before"></slot>
       <template v-if="!isInline">
         <json2form-item
-          v-for="item in columnsFilterShow"
-          :key="item.dataIndex"
+          v-for="item in columns"
+          :key="`${item.dataIndex} ${item.title}`"
           v-model="model"
           :item="{ ...item, editable: isEditable(item) }"
         ></json2form-item>
@@ -33,26 +33,14 @@
           :gutter="10"
           style="margin-left: 0; margin-right: 0"
         >
-          <el-col
-            v-for="item in columnsFilterShow"
-            :key="item.dataIndex"
-            v-bind="item.colProps || { span: 12 }"
-          >
-            <!-- v-show="
-              !getObj(item.hideInForm) && (isEditable(item) || item.title)
-            " -->
-            <!-- :contentWidth="
-              $attrs['label-width']
-                ? 'calc(100% - ' + $attrs['label-width'] + ')'
-                : ''
-            " -->
-            <!-- :class="setFitClass" -->
-
-            <json2form-item
-              v-model="model"
-              :item="{ ...item, editable: isEditable(item) }"
-            ></json2form-item>
-          </el-col>
+          <json2form-item
+            v-for="item in columns"
+            :key="`${item.dataIndex} ${item.title}`"
+            v-model="model"
+            :item="{ ...item, editable: isEditable(item) }"
+            inline
+          ></json2form-item>
+          <!-- </el-col> -->
         </el-row>
       </template>
       <slot name="after"></slot>
@@ -97,13 +85,6 @@ export default {
     };
   },
   computed: {
-    columnsFilterShow() {
-      return this.columns.filter((item) => {
-        return (
-          !this.getObj(item.hideInForm) && (this.isEditable(item) || item.title)
-        );
-      });
-    },
     // 用于同时监听两个参数
     columnsAndloading() {
       return { columns: this.columns, loading: this.loading };
@@ -119,10 +100,6 @@ export default {
   methods: {
     isEditable(item) {
       return item.editable || this.editable;
-    },
-    getObj(obj, ...args) {
-      if (obj && obj.constructor === Function) return obj(this.model, ...args);
-      return obj;
     },
     validate(fn) {
       this.$refs['form'].validate(fn);
@@ -202,11 +179,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* 显示详情的时候 */
-::v-deep [class*='el-col-'] {
-  display: inline-block;
-  vertical-align: top;
-  float: none;
-}
-</style>
+<style scoped></style>
