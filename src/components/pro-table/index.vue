@@ -225,13 +225,15 @@ export default {
   },
 
   mounted() {
-    window.onresize = debounce(() => {
-      // console.log(this.$refs['pro-form'].$el.scrollHeight);
+    window.onresize = () => {
       this.isOpen = false;
-      if (this.$refs['pro-form'].$el) {
-        this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
-      }
-    }, 300);
+      debounce(() => {
+        // console.log(this.$refs['pro-form'].$el.scrollHeight);
+        if (this.$refs['pro-form'].$el) {
+          this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
+        }
+      }, 300)();
+    };
   },
   beforeDestroy() {
     window.onresize = null;
@@ -246,6 +248,8 @@ export default {
         style={
           this.height
             ? {
+                display: 'flex',
+                'flex-direction': 'column',
                 height: this.height,
               }
             : undefined
