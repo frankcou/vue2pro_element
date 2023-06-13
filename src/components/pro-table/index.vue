@@ -214,11 +214,8 @@ export default {
     },
     columns: {
       handler(val, oldval) {
+        this.isOpen = false;
         this.$nextTick(() => {
-          // console.log(
-          //   'pro-form实例：',
-          //   this.$refs['pro-form'].$el.scrollHeight,
-          // );
           if (this.$refs['pro-form'].$el) {
             this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
           }
@@ -230,6 +227,7 @@ export default {
   mounted() {
     window.onresize = debounce(() => {
       // console.log(this.$refs['pro-form'].$el.scrollHeight);
+      this.isOpen = false;
       if (this.$refs['pro-form'].$el) {
         this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
       }
