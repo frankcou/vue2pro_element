@@ -248,8 +248,6 @@ export default {
         style={
           this.height
             ? {
-                display: 'flex',
-                'flex-direction': 'column',
                 height: this.height,
               }
             : undefined
