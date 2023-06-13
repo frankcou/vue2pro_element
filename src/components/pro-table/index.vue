@@ -219,7 +219,10 @@ export default {
           //   'pro-form实例：',
           //   this.$refs['pro-form'].$el.scrollHeight,
           // );
-          this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
+          if (this.$refs['pro-form'].$el) {
+            this.formHeight =
+              this.$refs['pro-form'].$el.children[0].scrollHeight;
+          }
         });
       },
     },
@@ -227,7 +230,9 @@ export default {
 
   mounted() {
     window.onresize = debounce(() => {
-      this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
+      if (this.$refs['pro-form'].$el) {
+        this.formHeight = this.$refs['pro-form'].$el.children[0].scrollHeight;
+      }
     }, 300);
   },
   beforeDestroy() {
