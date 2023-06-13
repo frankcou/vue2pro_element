@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "json2table-column",
+  name: 'json2table-column',
   props: {
     item: {
       type: Object,
@@ -20,8 +20,11 @@ export default {
         return this.model;
       },
       set(val) {
-        this.$emit("input", val);
+        this.$emit('input', val);
       },
+    },
+    empty() {
+      return '-';
     },
   },
   render(h) {
@@ -33,69 +36,81 @@ export default {
     const { valueType, dataIndex, title, tableColumnProps, dataRender } =
       this.item;
 
+    const fixed =
+      (tableColumnProps && tableColumnProps.fixed) || this.item.fixed || false;
+
     return (
       <el-table-column
         label={title}
         key={dataIndex}
         header-align="center"
         align="center"
-        props={tableColumnProps}
-        attrs={tableColumnProps}
-        scopedSlots={{
-          default: (scoped) => {
-            let value = scoped.row[dataIndex];
-            const options = getObj(scoped, this.item.options) || [];
+        props={{ ...tableColumnProps, fixed }}
+        attrs={{ ...tableColumnProps, fixed }}
+        scopedSlots={
+          !(tableColumnProps && tableColumnProps.type) && {
+            default: (
+              /**{row, column, $index} */
+              scoped,
+            ) => {
+              let value = scoped.row[dataIndex];
+              const options = getObj(scoped, this.item.options) || [];
 
-            if (dataRender) {
-              return dataRender(scoped);
-            } else {
-              if (valueType === "select") {
-                // 分组
-                if (options[0] && options[0].value === undefined) {
-                  let label = "-";
-                  options.forEach((el) => {
-                    el.options.forEach((_el) => {
-                      if (_el.value === value) {
-                        label = _el.label;
-                      }
+              if (tableColumnProps && tableColumnProps.type) return;
+
+              if (dataRender) {
+                return dataRender(scoped);
+              } else {
+                if (valueType === 'select') {
+                  // 分组
+                  if (options[0] && options[0].value === undefined) {
+                    let label = this.empty;
+                    options.forEach((el) => {
+                      el.options.forEach((_el) => {
+                        if (_el.value === value) {
+                          label = _el.label;
+                        }
+                      });
                     });
-                  });
-                  return label;
+                    return label;
+                  }
+                  // 非分组
+                  let opt = options.find((el) => el.value === value);
+                  return (opt && opt.label) || this.empty;
+                } else if (valueType === 'file') {
+                  return (
+                    <el-button
+                      type="text"
+                      disabled={!value}
+                      on={{
+                        click: () => {
+                          const newTab = window.open();
+                          newTab.opener = null;
+                          newTab.location.href = value;
+                        },
+                      }}
+                    >
+                      下载
+                    </el-button>
+                  );
+                } else if (valueType === 'img') {
+                  return value ? (
+                    <el-image
+                      class="json-table-column-img"
+                      src={value}
+                      preview-src-list={[value]}
+                    ></el-image>
+                  ) : (
+                    this.empty
+                  );
                 }
-                // 非分组
-                let opt = options.find((el) => el.value === value);
-                return (opt && opt.label) || "-";
-              } else if (valueType === "file") {
-                return (
-                  <el-button
-                    type="text"
-                    disabled={!value}
-                    on={{
-                      click: () => {
-                        const newTab = window.open();
-                        newTab.opener = null;
-                        newTab.location.href = value;
-                      },
-                    }}
-                  >
-                    下载
-                  </el-button>
-                );
-              } else if (valueType === "img") {
-                return value ? (
-                  <el-image
-                    class="json-table-column-img"
-                    src={value}
-                    preview-src-list={[value]}
-                  ></el-image>
-                ) : (
-                  "-"
-                );
+                return value === null || value === undefined
+                  ? this.empty
+                  : value;
               }
-              return value === null || value === undefined ? "-" : value;
-            }
-          },
-        }}
+            },
+          }
+        }
       ></el-table-column>
     );
   },
