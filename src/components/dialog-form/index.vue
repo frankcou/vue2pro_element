@@ -12,7 +12,7 @@
     :visible.sync="isVisible"
     :before-close="handleClose"
   >
-    <div v-loading="loading">
+    <div v-loading="modalLoading">
       <slot name="formTop"></slot>
 
       <slot>
@@ -20,8 +20,8 @@
           ref="proform"
           :shouldLoading="false"
           :columns="columns"
-          :loading="loading"
-          v-bind="formProps"
+          :loading="modalLoading"
+          v-bind="formAttrs"
           v-on="formProps && formProps.on"
           v-if="isVisible"
         ></pro-form>
@@ -37,7 +37,7 @@
         }}</el-button>
         <el-button
           type="primary"
-          @click="handleSubmit()"
+          @click="() => handleSubmit()"
           :loading="btnLoading"
           >{{ okText }}</el-button
         >
@@ -52,6 +52,7 @@ export default {
   props: {
     value: Boolean,
     title: String,
+    /**字段配置（会在request之后生成页面，需要获取initialValues）*/
     columns: {
       required: true,
       type: Array,
@@ -64,16 +65,35 @@ export default {
       type: Function, //()=>Promise<boolean>
       default: (params) => true,
     },
-    loading: {
-      type: Boolean,
-      default: false,
+    // loading: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    /** 弹层类型 add edit detail */
+    type: {
+      required: true,
+      type: String,
+    },
+    /**初始化请求，类型为()=>Promise，返回值为初始值 */
+    request: {
+      required: false,
+      type: Function,
+      default: () => ({}),
+    },
+    /**request请求之后 */
+    afterRequest: {
+      required: false,
+      type: Function,
+      default: () => ({}),
     },
     // closeConfirm:Function,// 使用dialogProps.beforeClose
     okConfirm: Function, //()=>Boolean true继续 false取消
   },
   data() {
     return {
+      modalLoading: true,
       btnLoading: false,
+      initVals: {},
     };
   },
   computed: {
@@ -85,17 +105,38 @@ export default {
         this.$emit('input', v);
       },
     },
+    formAttrs() {
+      return {
+        editable: this.editable,
+        initialValues: this.initVals,
+        ...this.formProps,
+      };
+    },
     editable() {
-      const formProps = this.formProps;
-      return (
-        !formProps ||
-        (formProps && formProps.editable === undefined) ||
-        (formProps && formProps.editable === true)
-      );
+      // const formProps = this.formProps;
+      // return (
+      //   !formProps ||
+      //   (formProps && formProps.editable === undefined) ||
+      //   (formProps && formProps.editable === true)
+      // );
+      return ['add', 'edit'].includes(this.type);
     },
   },
   methods: {
-    init() {
+    async init() {
+      console.log('dialog-form init');
+      this.modalLoading = true;
+      if (this.request) {
+        try {
+          this.initVals = (await this.request()) || {};
+        } catch (error) {
+          console.error(error);
+        }
+        if (this.afterRequest) this.afterRequest();
+      }
+      this.modalLoading = false;
+    },
+    reset() {
       // this.$refs["proform"].resetFields();
       Object.assign(this.$data, this.$options.data(this));
     },
@@ -128,6 +169,7 @@ export default {
           });
       };
       const form = slotFormRef || this.$refs['proform'];
+      // console.log(form);
       form.validate((_bool, obj) => {
         if (_bool) {
           if (this.okConfirm) {
@@ -152,7 +194,8 @@ export default {
   watch: {
     isVisible: {
       handler(newVal) {
-        if (!newVal) this.init();
+        if (!newVal) this.reset();
+        else this.init();
       },
     },
   },
