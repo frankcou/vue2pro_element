@@ -10,7 +10,7 @@
 /** 输入部分外层 */
 const InputWrap = {
   props: { type: String, errMsg: String },
-  render: function (h) {
+  render(h) {
     return this.type === 'pop' && this.errMsg ? (
       <el-tooltip
         {...this.$attrs}
@@ -32,11 +32,25 @@ const LayoutWrap = {
     inline: Boolean,
     colProps: {
       type: Object,
+      default: () => ({ span: 12 }),
     },
   },
-  render: function (h) {
+  render(h) {
+    const p = this.colProps;
+    // 下面el-col不知道为什么不能直接将p解耦，只能一个个放进去
     return this.inline ? (
-      <el-col span="12" {...this.colProps}>
+      <el-col
+        lg={p.lg}
+        md={p.md}
+        offset={p.offset}
+        pull={p.pull}
+        push={p.push}
+        sm={p.sm}
+        span={p.span}
+        tag={p.tag}
+        xl={p.xl}
+        xs={p.xs}
+      >
         {this.$slots.default}
       </el-col>
     ) : (
