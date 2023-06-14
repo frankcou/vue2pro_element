@@ -7,6 +7,7 @@
 
 <script>
 // import { ElTooltip } from 'element-ui';
+import DataTable from './read/dataTable.vue';
 /** 输入部分外层 */
 const InputWrap = {
   props: { type: String, errMsg: String },
@@ -61,7 +62,7 @@ const LayoutWrap = {
 
 export default {
   name: 'json2form-item',
-  components: { LayoutWrap, InputWrap },
+  components: { LayoutWrap, InputWrap, DataTable },
   props: {
     // json配置
     item: {
@@ -556,26 +557,13 @@ export default {
           );
         } else if (this.valueType === 'group') {
           return (
-            <el-table data={this.preLvData[this.dataIndex] || []}>
-              {this.item.groupColumns.map((el) => {
-                if (el.title) {
-                  return (
-                    <el-table-column
-                      label={this.getObj(el.title)}
-                      key={el.dataIndex}
-                      scopedSlots={{
-                        default: (scoped) =>
-                          scoped.row[el.dataIndex] || this.emptyVal,
-                      }}
-                    >
-                      {/* {this.renderDefVal} */}
-                    </el-table-column>
-                  );
-                }
-                return '';
-              })}
-              {/* */}
-            </el-table>
+            <DataTable
+              title={this.title}
+              dataSource={this.preLvData[this.dataIndex]}
+              item={this.item}
+              emptyVal={this.emptyVal}
+              getObj={this.getObj}
+            />
           );
         }
         return this.renderDefVal;
@@ -662,9 +650,11 @@ export default {
 .group_item > ::v-deep .el-form-item__content {
   width: 100%;
 }
+.group_item > ::v-deep .el-form-item__content {
+  border: 1px dashed #dcdfe6;
+}
 .group_item.is_editable > ::v-deep .el-form-item__content {
   padding-top: 15px;
-  border: 1px dashed #dcdfe6;
 }
 /* 校验的错误以hover弹出的方式显示，需要隐藏原有的位置 */
 .json2form-item.is_editable.popErrMsg {
