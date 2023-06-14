@@ -440,6 +440,17 @@ export default {
                       gutter={10}
                       style="margin-left: 0; margin-right: 0"
                     >
+                      <json2form-item
+                        key={this.dataIndex + '.' + idx + '.index'}
+                        vModel={row}
+                        item={{
+                          colProps: { span: 1 },
+                          dataIndex: 'index',
+                          editable: true,
+                          formItemRender: () => idx + 1 + '.',
+                        }}
+                        inline
+                      ></json2form-item>
                       {this.item.groupColumns.map((childItem) => {
                         return !this.getObj(childItem.hideInForm) ? (
                           <json2form-item
@@ -483,7 +494,6 @@ export default {
                                   default: () => (
                                     <el-button
                                       size="small"
-                                      type="danger"
                                       vOn:click={() => this.groupDelItem(idx)}
                                     >
                                       删 除
