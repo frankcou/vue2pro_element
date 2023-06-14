@@ -44,7 +44,7 @@
 </template>
 
 <script>
-const defVal = '';
+// const defVal = '';
 export default {
   name: 'pro-form',
   props: {
@@ -77,6 +77,8 @@ export default {
       isCreated: false,
       /** 表单值 */
       model: {},
+      /** 清空后的值 */
+      emptyData: {},
     };
   },
   computed: {
@@ -108,18 +110,23 @@ export default {
     },
     /**清空表单 */
     clearFields() {
-      let model = {};
+      // let model = {};
 
-      for (const key in this.model) {
-        if (Object.hasOwnProperty.call(this.model, key)) {
-          model[key] = defVal;
-        }
-      }
-      this.$set(this, 'model', model);
+      // for (const key in this.model) {
+      //   if (Object.hasOwnProperty.call(this.model, key)) {
+      //     model[key] = this.defVal();
+      //   }
+      // }
+      // this.$set(this, 'model', model);
+      this.$set(this, 'model', this.emptyData);
+
       this.clearValidate();
     },
     clearValidate(fn) {
       this.$refs['form'].clearValidate(fn);
+    },
+    defVal(item) {
+      return item.valueType === 'group' ? [] : '';
     },
   },
   watch: {
@@ -131,6 +138,7 @@ export default {
         let { columns, loading } = newVal;
         if (loading || !columns) return;
         let model = {};
+        let emptyData = {};
 
         // 第一次改变数据————初始化数据
         if (!loading && columns.length && !this.isCreated) {
@@ -146,14 +154,23 @@ export default {
                       this.initialValues && this.initialValues[item.dataIndex],
                     )
                   ? this.initialValues[item.dataIndex]
-                  : defVal;
+                  : this.defVal(item);
+
+              emptyData[item.dataIndex] = this.defVal(item);
 
               if (typeof item.transform === 'function') {
                 let object = item.transform(model[item.dataIndex]);
                 Object.assign(model, object || {});
+
+                let object_empty = item.transform(emptyData[item.dataIndex]);
+                emptyData[item.dataIndex] = this.defVal(item);
+                Object.assign(emptyData, object_empty || {});
               }
             }
           });
+          this.$set(this, 'emptyData', emptyData);
+          Object.freeze(this.emptyData);
+
           this.$set(this, 'model', model);
           console.log('model', model);
           // columns更新,获取最新字段
