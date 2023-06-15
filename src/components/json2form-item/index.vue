@@ -448,7 +448,9 @@ export default {
                         colProps: { span: 1 },
                         dataIndex: 'index',
                         editable: true,
-                        formItemRender: () => idx + 1 + '.',
+                        formItemRender: () => (
+                          <span class="group_row-index">{idx + 1 + '.'}</span>
+                        ),
                       }}
                     ></json2form-item>
                     {this.item.groupColumns.map((childItem) => {
@@ -677,5 +679,9 @@ export default {
 }
 .fit_w ::v-deep .el-form-item__content {
   width: var(--formitem_content-w);
+}
+
+.group_row-index {
+  margin: 0 15px;
 }
 </style>
