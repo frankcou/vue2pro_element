@@ -5,22 +5,10 @@ export default {
     title: {
       type: String,
     },
-    item: {
-      type: Object,
-      required: true,
-    },
     dataSource: {
       type: Array,
       required: true,
       default: () => [],
-    },
-    emptyVal: {
-      type: String,
-      default: '-',
-    },
-    getObj: {
-      type: Function,
-      required: true,
     },
   },
   data() {
@@ -51,27 +39,7 @@ export default {
         ></el-form-item>
         <el-table data={this.dataSourceInVisible}>
           <el-table-column type="index"></el-table-column>
-          {this.item.groupColumns.map((el) => {
-            if (el.title) {
-              return (
-                <el-table-column
-                  label={this.getObj(el.title)}
-                  key={el.dataIndex}
-                  props={{
-                    ...(el.tableColumnProps || {}),
-                    fixed: (el.tableColumnProps || {}).fixed || this.item.fixed,
-                  }}
-                  scopedSlots={{
-                    default: (scoped) =>
-                      this.getObj(el.hideInDesc)
-                        ? this.emptyVal
-                        : scoped.row[el.dataIndex] || this.emptyVal,
-                  }}
-                ></el-table-column>
-              );
-            }
-            return '';
-          })}
+          {this.$scopedSlots.default()}
         </el-table>
         <div class="data_table-pagination_wrap">
           <el-pagination

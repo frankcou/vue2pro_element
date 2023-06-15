@@ -574,7 +574,30 @@ export default {
               item={this.item}
               emptyVal={this.emptyVal}
               getObj={this.getObj}
-            />
+            >
+              {this.item.groupColumns.map((el) => {
+                if (el.title) {
+                  return (
+                    <el-table-column
+                      label={this.getObj(el.title)}
+                      key={el.dataIndex}
+                      props={{
+                        ...(el.tableColumnProps || {}),
+                        fixed:
+                          (el.tableColumnProps || {}).fixed || this.item.fixed,
+                      }}
+                      scopedSlots={{
+                        default: (scoped) =>
+                          this.getObj(el.hideInDesc)
+                            ? this.emptyVal
+                            : scoped.row[el.dataIndex] || this.emptyVal,
+                      }}
+                    ></el-table-column>
+                  );
+                }
+                return '';
+              })}
+            </DataTable>
           );
         }
         return this.renderDefVal;
