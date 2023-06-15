@@ -434,80 +434,79 @@ export default {
               </el-form-item>
               {(this.preLvData[this.dataIndex] || []).map((row, idx) => {
                 return (
-                  <div>
-                    <el-row
-                      align="top"
-                      gutter={10}
-                      style="margin-left: 0; margin-right: 0"
-                    >
-                      <json2form-item
-                        key={this.dataIndex + '.' + idx + '.index'}
-                        vModel={row}
-                        item={{
-                          colProps: { span: 1 },
-                          dataIndex: 'index',
-                          editable: true,
-                          formItemRender: () => idx + 1 + '.',
-                        }}
-                        inline
-                      ></json2form-item>
-                      {this.item.groupColumns.map((childItem) => {
-                        return !this.getObj(childItem.hideInForm) ? (
-                          <json2form-item
-                            key={
-                              this.dataIndex +
-                              '.' +
-                              idx +
-                              '.' +
-                              childItem.dataIndex
-                            }
-                            prop={
-                              this.formItemProp +
-                              '.' +
-                              idx +
-                              '.' +
-                              childItem.dataIndex
-                            }
-                            vModel={row}
-                            item={{
-                              ...childItem,
-                              editable: childItem.editable || this.editable,
-                            }}
-                            inline
-                          ></json2form-item>
-                        ) : (
-                          ''
-                        );
-                      })}
+                  <el-row
+                    class="group_row"
+                    align="top"
+                    gutter={10}
+                    style="margin-left: 0; margin-right: 0"
+                  >
+                    <json2form-item
+                      class="group_row-col"
+                      key={this.dataIndex + '.' + idx + '.index'}
+                      vModel={row}
+                      item={{
+                        colProps: { span: 1 },
+                        dataIndex: 'index',
+                        editable: true,
+                        formItemRender: () => idx + 1 + '.',
+                      }}
+                    ></json2form-item>
+                    {this.item.groupColumns.map((childItem) => {
+                      return !this.getObj(childItem.hideInForm) ? (
+                        <json2form-item
+                          class="group_row-col"
+                          key={
+                            this.dataIndex +
+                            '.' +
+                            idx +
+                            '.' +
+                            childItem.dataIndex
+                          }
+                          prop={
+                            this.formItemProp +
+                            '.' +
+                            idx +
+                            '.' +
+                            childItem.dataIndex
+                          }
+                          vModel={row}
+                          item={{
+                            ...childItem,
+                            editable: childItem.editable || this.editable,
+                          }}
+                        ></json2form-item>
+                      ) : (
+                        ''
+                      );
+                    })}
 
-                      <json2form-item
-                        key={this.dataIndex + '.' + idx + '.del'}
-                        vModel={row}
-                        item={{
-                          colProps: { span: 2 },
-                          dataIndex: 'delbtn',
-                          editable: true,
-                          formItemRender: () => {
-                            return (
-                              <el-form-item
-                                scopedSlots={{
-                                  default: () => (
-                                    <el-button
-                                      size="small"
-                                      vOn:click={() => this.groupDelItem(idx)}
-                                    >
-                                      删 除
-                                    </el-button>
-                                  ),
-                                }}
-                              ></el-form-item>
-                            );
-                          },
-                        }}
-                        inline
-                      ></json2form-item>
-                    </el-row>
-                  </div>
+                    <json2form-item
+                      class="group_row-col"
+                      key={this.dataIndex + '.' + idx + '.del'}
+                      vModel={row}
+                      item={{
+                        colProps: { span: 2 },
+                        dataIndex: 'delbtn',
+                        editable: true,
+                        formItemRender: () => {
+                          return (
+                            <el-form-item
+                              scopedSlots={{
+                                default: () => (
+                                  <el-button
+                                    size="small"
+                                    vOn:click={() => this.groupDelItem(idx)}
+                                  >
+                                    删 除
+                                  </el-button>
+                                ),
+                              }}
+                            ></el-form-item>
+                          );
+                        },
+                      }}
+                    ></json2form-item>
+                  </el-row>
                 );
               })}
             </div>
