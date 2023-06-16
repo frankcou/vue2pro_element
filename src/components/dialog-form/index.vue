@@ -159,8 +159,9 @@ export default {
     },
     handleSubmit(slotFormRef) {
       this.btnLoading = true;
+      const form = slotFormRef || this.$refs['proform'];
       const continueFn = () => {
-        this.onFinish(form.model)
+        this.onFinish(JSON.stringify(JSON.parse(form.model))) //避免外界修改原数据
           .then((bool) => {
             this.isVisible = bool;
           })
@@ -168,7 +169,6 @@ export default {
             this.btnLoading = false;
           });
       };
-      const form = slotFormRef || this.$refs['proform'];
       // console.log(form);
       form.validate((_bool, obj) => {
         if (_bool) {
