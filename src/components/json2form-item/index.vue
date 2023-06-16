@@ -150,10 +150,10 @@ export default {
       );
     },
     rules() {
-      return (
-        (this.formItemProps && this.formItemProps.rules) ||
-        this.getObj(this.item.rules)
-      );
+      if (this.formItemProps && this.formItemProps.rules) {
+        return this.getObj(this.formItemProps.rules);
+      }
+      return this.getObj(this.item.rules);
     },
     emptyVal() {
       return this.getObj(this.item.title) ? '-' : '';
@@ -177,7 +177,13 @@ export default {
       return this.required || (this.rules || []).some((rule) => rule.required);
     },
     funcTypeArgs() {
-      return [this.preLvData, this.elForm.model, this.prop, this.rowIndex];
+      return [
+        this.preLvData,
+        this.elForm.model,
+        this.prop,
+        this.rowIndex,
+        this.elForm,
+      ];
     },
     validate(cb) {
       this.elForm.validateField(this.formItemProp, cb);
