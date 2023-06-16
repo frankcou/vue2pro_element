@@ -8,11 +8,11 @@
 <script>
 import Json2TableColumn from '../json2table-column';
 import proForm from '../pro-form';
-function debounce(fn, delay = 1000) {
-  let time = null;
+let time = {};
+function debounce(eventName, fn, delay = 1000) {
   function _debounce() {
-    if (time !== null) clearTimeout(time);
-    time = setTimeout(fn, delay);
+    if (time[eventName] !== null) clearTimeout(time[eventName]);
+    time[eventName] = setTimeout(fn, delay);
   }
   return _debounce;
 }
@@ -227,12 +227,16 @@ export default {
   mounted() {
     window.onresize = () => {
       this.isOpen = false;
-      debounce(() => {
-        // console.log(this.$refs['pro-form'].$el.scrollHeight);
-        if (this.$refs['pro-form'].$el) {
-          this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
-        }
-      }, 300)();
+      debounce(
+        'resize',
+        () => {
+          // console.log(this.$refs['pro-form'].$el.scrollHeight);
+          if (this.$refs['pro-form'].$el) {
+            this.formHeight = this.$refs['pro-form'].$el.scrollHeight;
+          }
+        },
+        300,
+      )();
     };
   },
   beforeDestroy() {
