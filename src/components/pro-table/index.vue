@@ -6,16 +6,9 @@
 -->
 
 <script>
+import { debounce, getObjByPath } from '../../utils';
 import Json2TableColumn from '../json2table-column';
 import proForm from '../pro-form';
-let time = {};
-function debounce(eventName, fn, delay = 1000) {
-  function _debounce() {
-    if (time[eventName] !== null) clearTimeout(time[eventName]);
-    time[eventName] = setTimeout(fn, delay);
-  }
-  return _debounce;
-}
 
 export default {
   name: 'ProTable',
@@ -126,7 +119,7 @@ export default {
       // 过滤
       this.columns.forEach((item) => {
         if (item.hideInForm) {
-          delete params.params[item.dataIndex];
+          delete getObjByPath(params.params, item.dataIndex);
         }
       });
       return this.transformParams ? this.transformParams(params) : params;

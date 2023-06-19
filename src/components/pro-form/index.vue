@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { objByPath } from '../../utils';
 // const defVal = '';
 export default {
   name: 'pro-form',
@@ -147,23 +148,27 @@ export default {
           this.isCreated = true;
           columns.forEach((item, idx) => {
             if (item.dataIndex) {
-              model[item.dataIndex] =
+              const val = objByPath(this.initialValues, item.dataIndex).get();
+              objByPath(model, item.dataIndex).set(
                 item.initialValue !== undefined
                   ? item.initialValue
-                  : ![undefined, null].includes(
-                      this.initialValues && this.initialValues[item.dataIndex],
-                    )
-                  ? this.initialValues[item.dataIndex]
-                  : this.defVal(item);
+                  : ![undefined, null].includes(this.initialValues && val)
+                  ? val
+                  : this.defVal(item),
+              );
 
-              emptyData[item.dataIndex] = this.defVal(item);
+              objByPath(emptyData, item.dataIndex).set(this.defVal(item));
 
               if (typeof item.transform === 'function') {
-                let object = item.transform(model[item.dataIndex]);
+                let object = item.transform(
+                  objByPath(model, item.dataIndex).get(),
+                );
                 Object.assign(model, object || {});
 
-                let object_empty = item.transform(emptyData[item.dataIndex]);
-                emptyData[item.dataIndex] = this.defVal(item);
+                let object_empty = item.transform(
+                  objByPath(emptyData, item.dataIndex).get(),
+                );
+                objByPath(emptyData, item.dataIndex).set(this.defVal(item));
                 Object.assign(emptyData, object_empty || {});
               }
             }
@@ -178,7 +183,9 @@ export default {
           console.log('update columns', columns);
           columns.forEach((item) => {
             if (item.dataIndex) {
-              model[item.dataIndex] = this.model[item.dataIndex];
+              objByPath(model, item.dataIndex).set(
+                objByPath(this.model, item.dataIndex).get(),
+              );
             }
           });
           this.$set(this, 'model', model);

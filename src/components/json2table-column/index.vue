@@ -6,6 +6,7 @@
 -->
 
 <script>
+import { objByPath } from '../../utils';
 export default {
   name: 'json2table-column',
   props: {
@@ -53,7 +54,7 @@ export default {
               /**{row, column, $index} */
               scoped,
             ) => {
-              let value = scoped.row[dataIndex];
+              let value = objByPath(scoped.row, dataIndex).get();
               const options = getObj(scoped, this.item.options) || [];
 
               if (tableColumnProps && tableColumnProps.type) return;

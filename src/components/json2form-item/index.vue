@@ -6,6 +6,7 @@
 -->
 
 <script>
+import { objByPath } from '../../utils';
 // import { ElTooltip } from 'element-ui';
 import DataTable from './read/dataTable.vue';
 /** 输入部分外层 */
@@ -159,10 +160,8 @@ export default {
       return this.getObj(this.item.title) ? '-' : '';
     },
     renderDefVal() {
-      return this.preLvData[this.dataIndex] === null ||
-        this.preLvData[this.dataIndex] === undefined
-        ? this.emptyVal
-        : this.preLvData[this.dataIndex];
+      const def = objByPath(this.preLvData, this.dataIndex).get();
+      return def === null || def === undefined ? this.emptyVal : def;
     },
     title() {
       return this.getObj(this.item.title);
@@ -206,9 +205,9 @@ export default {
       } else {
         const obj = {};
         this.item.groupColumns.forEach((colItem) => {
-          obj[colItem.dataIndex] = '';
+          objByPath(obj, colItem.dataIndex).set('');
         });
-        this.preLvData[this.dataIndex].push(obj);
+        objByPath(this.preLvData, this.dataIndex).get().push(obj);
       }
       this.validateField();
     },
@@ -217,7 +216,7 @@ export default {
       if (this.fieldProps && this.fieldProps.on && this.fieldProps.on.del) {
         this.fieldProps.on.del(...this.funcTypeArgs());
       } else {
-        this.preLvData[this.dataIndex].splice(delIdx, 1);
+        objByPath(this.preLvData, this.dataIndex).get().splice(delIdx, 1);
       }
       this.validateField();
     },
@@ -225,7 +224,7 @@ export default {
       let map = {
         input: (e) => {
           // 正常赋值
-          this.preLvData[this.dataIndex] = e;
+          objByPath(this.preLvData, this.dataIndex).set(e);
           // 额外赋值
           if (typeof this.item.transform === 'function') {
             let object = this.item.transform(e);
@@ -271,7 +270,7 @@ export default {
       let p = {
         attrs: this.fieldProps,
         props: {
-          value: this.preLvData[this.dataIndex],
+          value: objByPath(this.preLvData, this.dataIndex).get(),
           clearable: true,
           ...this.fieldProps,
         },
@@ -376,7 +375,7 @@ export default {
 
           {this.valueType === 'group' && (
             /* (
-                        <el-table data={this.preLvData[this.dataIndex] || []}>
+                        <el-table data={objByPath(this.preLvData,this.dataIndex).get() || []}>
                           {this.item.groupColumns.map((el) => {
                             if (el.title) {
                               return (
@@ -439,85 +438,89 @@ export default {
                 </el-button>
               </el-form-item>
               <div class="group_items">
-                {(this.preLvData[this.dataIndex] || []).map((row, idx) => {
-                  return (
-                    <el-row
-                      class="group_row"
-                      align="top"
-                      gutter={10}
-                      style="margin-left: 0; margin-right: 0"
-                    >
-                      <json2form-item
-                        class="group_row-col"
-                        key={this.dataIndex + '.' + idx + '.index'}
-                        vModel={row}
-                        item={{
-                          colProps: { span: 1 },
-                          dataIndex: 'index',
-                          editable: true,
-                          formItemRender: () => (
-                            <span class="group_row-index">{idx + 1 + '.'}</span>
-                          ),
-                        }}
-                      ></json2form-item>
-                      {this.item.groupColumns.map((childItem) => {
-                        return !this.getObj(childItem.hideInForm) ? (
-                          <json2form-item
-                            class="group_row-col"
-                            key={
-                              this.dataIndex +
-                              '.' +
-                              idx +
-                              '.' +
-                              childItem.dataIndex
-                            }
-                            prop={
-                              this.formItemProp +
-                              '.' +
-                              idx +
-                              '.' +
-                              childItem.dataIndex
-                            }
-                            vModel={row}
-                            item={{
-                              ...childItem,
-                              editable: childItem.editable || this.editable,
-                            }}
-                          ></json2form-item>
-                        ) : (
-                          ''
-                        );
-                      })}
+                {(objByPath(this.preLvData, this.dataIndex).get() || []).map(
+                  (row, idx) => {
+                    return (
+                      <el-row
+                        class="group_row"
+                        align="top"
+                        gutter={10}
+                        style="margin-left: 0; margin-right: 0"
+                      >
+                        <json2form-item
+                          class="group_row-col"
+                          key={this.dataIndex + '.' + idx + '.index'}
+                          vModel={row}
+                          item={{
+                            colProps: { span: 1 },
+                            dataIndex: 'index',
+                            editable: true,
+                            formItemRender: () => (
+                              <span class="group_row-index">
+                                {idx + 1 + '.'}
+                              </span>
+                            ),
+                          }}
+                        ></json2form-item>
+                        {this.item.groupColumns.map((childItem) => {
+                          return !this.getObj(childItem.hideInForm) ? (
+                            <json2form-item
+                              class="group_row-col"
+                              key={
+                                this.dataIndex +
+                                '.' +
+                                idx +
+                                '.' +
+                                childItem.dataIndex
+                              }
+                              prop={
+                                this.formItemProp +
+                                '.' +
+                                idx +
+                                '.' +
+                                childItem.dataIndex
+                              }
+                              vModel={row}
+                              item={{
+                                ...childItem,
+                                editable: childItem.editable || this.editable,
+                              }}
+                            ></json2form-item>
+                          ) : (
+                            ''
+                          );
+                        })}
 
-                      <json2form-item
-                        class="group_row-col"
-                        key={this.dataIndex + '.' + idx + '.del'}
-                        vModel={row}
-                        item={{
-                          colProps: { span: 2 },
-                          dataIndex: 'delbtn',
-                          editable: true,
-                          formItemRender: () => {
-                            return (
-                              <el-form-item
-                                scopedSlots={{
-                                  default: () => (
-                                    <el-button
-                                      size="small"
-                                      vOn:click={() => this.groupDelItem(idx)}
-                                    >
-                                      删 除
-                                    </el-button>
-                                  ),
-                                }}
-                              ></el-form-item>
-                            );
-                          },
-                        }}
-                      ></json2form-item>
-                    </el-row>
-                  );
-                })}
+                        <json2form-item
+                          class="group_row-col"
+                          key={this.dataIndex + '.' + idx + '.del'}
+                          vModel={row}
+                          item={{
+                            colProps: { span: 2 },
+                            dataIndex: 'delbtn',
+                            editable: true,
+                            formItemRender: () => {
+                              return (
+                                <el-form-item
+                                  scopedSlots={{
+                                    default: () => (
+                                      <el-button
+                                        size="small"
+                                        vOn:click={() => this.groupDelItem(idx)}
+                                      >
+                                        删 除
+                                      </el-button>
+                                    ),
+                                  }}
+                                ></el-form-item>
+                              );
+                            },
+                          }}
+                        ></json2form-item>
+                      </el-row>
+                    );
+                  },
+                )}
               </div>
             </div>
           )}
@@ -536,7 +539,9 @@ export default {
             let label = this.emptyVal;
             this.options.forEach((el) => {
               el.options.forEach((_el) => {
-                if (_el.value === this.preLvData[this.dataIndex]) {
+                if (
+                  _el.value === objByPath(this.preLvData, this.dataIndex).get()
+                ) {
                   label = _el.label;
                 }
               });
@@ -545,19 +550,23 @@ export default {
           }
           // 非分组
           let opt = this.options.find(
-            (el) => el.value === this.preLvData[this.dataIndex],
+            (el) =>
+              el.value === objByPath(this.preLvData, this.dataIndex).get(),
           );
           return (opt && opt.label) || this.renderDefVal;
         } else if (this.valueType === 'file') {
           return (
             <el-button
               type="text"
-              disabled={!this.preLvData[this.dataIndex]}
+              disabled={!objByPath(this.preLvData, this.dataIndex).get()}
               on={{
                 click: () => {
                   const newTab = window.open();
                   newTab.opener = null;
-                  newTab.location.href = this.preLvData[this.dataIndex];
+                  newTab.location.href = objByPath(
+                    this.preLvData,
+                    this.dataIndex,
+                  ).get();
                 },
               }}
             >
@@ -565,11 +574,13 @@ export default {
             </el-button>
           );
         } else if (this.valueType === 'img') {
-          return this.preLvData[this.dataIndex] ? (
+          return objByPath(this.preLvData, this.dataIndex).get() ? (
             <el-image
               class="json-form-item-img"
-              src={this.preLvData[this.dataIndex]}
-              preview-src-list={[this.preLvData[this.dataIndex]]}
+              src={objByPath(this.preLvData, this.dataIndex).get()}
+              preview-src-list={[
+                objByPath(this.preLvData, this.dataIndex).get(),
+              ]}
             ></el-image>
           ) : (
             this.emptyVal
@@ -578,7 +589,7 @@ export default {
           return (
             <DataTable
               title={this.title}
-              dataSource={this.preLvData[this.dataIndex]}
+              dataSource={objByPath(this.preLvData, this.dataIndex).get()}
               item={this.item}
               emptyVal={this.emptyVal}
               getObj={this.getObj}
@@ -595,10 +606,12 @@ export default {
                           (el.tableColumnProps || {}).fixed || this.item.fixed,
                       }}
                       scopedSlots={{
-                        default: (scoped) =>
-                          this.getObj(el.hideInDesc)
+                        default: (scoped) => {
+                          return this.getObj(el.hideInDesc)
                             ? this.emptyVal
-                            : scoped.row[el.dataIndex] || this.emptyVal,
+                            : objByPath(scoped.row, el.dataIndex).get() ||
+                                this.emptyVal;
+                        },
                       }}
                     ></el-table-column>
                   );
@@ -630,8 +643,8 @@ export default {
                 //'group_item-hidden':
                 //  this.editable &&
                 //  this.valueType === 'group' &&
-                //  (!this.preLvData[this.dataIndex] ||
-                //    !this.preLvData[this.dataIndex].length),
+                //  (!objByPath(this.preLvData,this.dataIndex).get()) ||
+                //    !objByPath(this.preLvData,this.dataIndex).get()).length),
                 popErrMsg: this.popErrMsg,
               }}
               label={this.valueType === 'group' ? '' : this.title}
