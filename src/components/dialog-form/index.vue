@@ -158,16 +158,13 @@ export default {
       }
     },
     handleSubmit(slotFormRef) {
+      console.log('handleSubmit');
       this.btnLoading = true;
       const form = slotFormRef || this.$refs['proform'];
-      const continueFn = () => {
-        this.onFinish(JSON.stringify(JSON.parse(form.model))) //避免外界修改原数据
-          .then((bool) => {
-            this.isVisible = bool;
-          })
-          .finally(() => {
-            this.btnLoading = false;
-          });
+      const continueFn = async () => {
+        // console.log('continueFn', JSON.parse(JSON.stringify(form.model)));
+        await this.onFinish(JSON.parse(JSON.stringify(form.model))); //避免外界修改原数据
+        this.isVisible = false;
       };
       // console.log(form);
       form.validate((_bool, obj) => {
@@ -181,7 +178,7 @@ export default {
           } else {
             this.$confirm('确认提交？')
               .then(continueFn)
-              .catch(() => {
+              .finally(() => {
                 this.btnLoading = false;
               });
           }
