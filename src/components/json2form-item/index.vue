@@ -79,6 +79,7 @@ export default {
     prop: String,
     // 用于设置el-form-item__content的宽度
     // contentWidth: String,d
+    /**是否以弹出提示的方式显示校验信息 */
     popErrMsg: {
       type: Boolean,
       default: false,
@@ -88,9 +89,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    /**是否不渲染el-form-item,仅渲染内容 (目前仅是用来区分详情中的字段是否为列表下的字段)*/
+    noFormItem: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
+      /**校验信息 */
       errMsg: '',
     };
   },
@@ -157,9 +164,14 @@ export default {
       return this.getObj(this.item.rules);
     },
     emptyVal() {
-      return this.getObj(this.item.title) ? '-' : '';
+      return this.title ? '-' : '';
     },
+    /**详情中字段显示的内容，为对应值或'-' */
     renderDefVal() {
+      // 这里的显示是因为table中hideInDesc无法隐藏对应列，所以显示emptyVal
+      // （有些因为字段判断会隐藏，有些会显示，所以所有列都需要显示）
+      if (this.hideInDesc) return this.emptyVal;
+      // 非hideInDesc的显示
       const def = objByPath(this.preLvData, this.dataIndex).get();
       return def === null || def === undefined ? this.emptyVal : def;
     },
@@ -463,31 +475,17 @@ export default {
                           }}
                         ></json2form-item>
                         {this.item.groupColumns.map((childItem) => {
-                          return !this.getObj(childItem.hideInForm) ? (
+                          return (
                             <json2form-item
                               class="group_row-col"
-                              key={
-                                this.dataIndex +
-                                '.' +
-                                idx +
-                                '.' +
-                                childItem.dataIndex
-                              }
-                              prop={
-                                this.formItemProp +
-                                '.' +
-                                idx +
-                                '.' +
-                                childItem.dataIndex
-                              }
+                              key={`${this.dataIndex}.${idx}.${childItem.dataIndex}`}
+                              prop={`${this.formItemProp}.${idx}.${childItem.dataIndex}`}
                               vModel={row}
                               item={{
                                 ...childItem,
                                 editable: childItem.editable || this.editable,
                               }}
                             ></json2form-item>
-                          ) : (
-                            ''
                           );
                         })}
 
@@ -530,98 +528,96 @@ export default {
 
     /**只读模式formitem渲染 */
     const formItemContent_read = (scoped) => {
-      if (this.item.dataRender) {
-        return this.item.dataRender(this.preLvData);
-      } else {
-        if (this.valueType === 'select') {
-          // 分组
-          if (this.options[0] && this.options[0].value === undefined) {
-            let label = this.emptyVal;
-            this.options.forEach((el) => {
-              el.options.forEach((_el) => {
-                if (
-                  _el.value == objByPath(this.preLvData, this.dataIndex).get()
-                ) {
-                  label = _el.label;
-                }
-              });
+      if (this.valueType === 'select') {
+        // 分组
+        if (this.options[0] && this.options[0].value === undefined) {
+          let label = this.emptyVal;
+          this.options.forEach((el) => {
+            el.options.forEach((_el) => {
+              if (
+                _el.value == objByPath(this.preLvData, this.dataIndex).get()
+              ) {
+                label = _el.label;
+              }
             });
-            return label;
-          }
-          // 非分组
-          let opt = this.options.find(
-            (el) => el.value == objByPath(this.preLvData, this.dataIndex).get(),
-          );
-          return (opt && opt.label) || this.renderDefVal;
-        } else if (this.valueType === 'file') {
-          return (
-            <el-button
-              type="text"
-              disabled={!objByPath(this.preLvData, this.dataIndex).get()}
-              on={{
-                click: () => {
-                  const newTab = window.open();
-                  newTab.opener = null;
-                  newTab.location.href = objByPath(
-                    this.preLvData,
-                    this.dataIndex,
-                  ).get();
-                },
-              }}
-            >
-              下载
-            </el-button>
-          );
-        } else if (this.valueType === 'img') {
-          return objByPath(this.preLvData, this.dataIndex).get() ? (
-            <el-image
-              class="json-form-item-img"
-              src={objByPath(this.preLvData, this.dataIndex).get()}
-              preview-src-list={[
-                objByPath(this.preLvData, this.dataIndex).get(),
-              ]}
-            ></el-image>
-          ) : (
-            this.emptyVal
-          );
-        } else if (this.valueType === 'group') {
-          return (
-            <DataTable
-              title={this.title}
-              dataSource={objByPath(this.preLvData, this.dataIndex).get()}
-              item={this.item}
-              emptyVal={this.emptyVal}
-              getObj={this.getObj}
-            >
-              {this.item.groupColumns.map((el) => {
-                if (el.title) {
-                  return (
-                    <el-table-column
-                      label={this.getObj(el.title)}
-                      key={el.dataIndex}
-                      props={{
-                        ...(el.tableColumnProps || {}),
-                        fixed:
-                          (el.tableColumnProps || {}).fixed || this.item.fixed,
-                      }}
-                      scopedSlots={{
-                        default: (scoped) => {
-                          return this.getObj(el.hideInDesc)
-                            ? this.emptyVal
-                            : objByPath(scoped.row, el.dataIndex).get() ||
-                                this.emptyVal;
-                        },
-                      }}
-                    ></el-table-column>
-                  );
-                }
-                return '';
-              })}
-            </DataTable>
-          );
+          });
+          return label;
         }
-        return this.renderDefVal;
+        // 非分组
+        let opt = this.options.find(
+          (el) => el.value == objByPath(this.preLvData, this.dataIndex).get(),
+        );
+        return (opt && opt.label) || this.renderDefVal;
+      } else if (this.valueType === 'file') {
+        return (
+          <el-button
+            type="text"
+            disabled={!objByPath(this.preLvData, this.dataIndex).get()}
+            on={{
+              click: () => {
+                const newTab = window.open();
+                newTab.opener = null;
+                newTab.location.href = objByPath(
+                  this.preLvData,
+                  this.dataIndex,
+                ).get();
+              },
+            }}
+          >
+            下载
+          </el-button>
+        );
+      } else if (this.valueType === 'img') {
+        return objByPath(this.preLvData, this.dataIndex).get() ? (
+          <el-image
+            class="json-form-item-img"
+            src={objByPath(this.preLvData, this.dataIndex).get()}
+            preview-src-list={[objByPath(this.preLvData, this.dataIndex).get()]}
+          ></el-image>
+        ) : (
+          this.emptyVal
+        );
+      } else if (this.valueType === 'group') {
+        return (
+          <DataTable
+            title={this.title}
+            dataSource={objByPath(this.preLvData, this.dataIndex).get()}
+          >
+            {this.item.groupColumns.map((el) => {
+              if (el.title) {
+                return (
+                  <el-table-column
+                    label={this.getObj(el.title)}
+                    key={el.dataIndex}
+                    props={{
+                      ...(el.tableColumnProps || {}),
+                      fixed:
+                        (el.tableColumnProps || {}).fixed || this.item.fixed,
+                    }}
+                    scopedSlots={{
+                      default: (scoped) => (
+                        <json2form-item
+                          class="group_row-col"
+                          key={`${this.dataIndex}.${scoped.$index}.${el.dataIndex}`}
+                          prop={`${this.dataIndex}.${scoped.$index}.${el.dataIndex}`}
+                          vModel={scoped.row}
+                          item={{
+                            ...el,
+                            editable: false,
+                          }}
+                          noFormItem
+                        ></json2form-item>
+                      ),
+                    }}
+                  ></el-table-column>
+                );
+              }
+              return '';
+            })}
+          </DataTable>
+        );
       }
+      return this.renderDefVal;
     };
 
     /**formItem以及外层 */
@@ -632,6 +628,8 @@ export default {
             this.getObj(this.item.formItemRender)
           ) : !this.editable && this.item.dataRender ? (
             this.getObj(this.item.dataRender)
+          ) : this.noFormItem ? (
+            formItemContent()
           ) : (
             <el-form-item
               class={{
@@ -666,7 +664,6 @@ export default {
       );
     };
 
-    // 完全不渲染
     if (this.editable) {
       if (this.hideInForm) {
         return '';
@@ -674,8 +671,8 @@ export default {
         return layout(formItemContent_edit);
       }
     } else {
-      if (this.hideInDesc) {
-        return '';
+      if (this.hideInDesc && !this.noFormItem) {
+        return ''; //对应字段整个都不要
       } else {
         return layout(formItemContent_read);
       }
