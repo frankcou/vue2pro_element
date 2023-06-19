@@ -540,7 +540,7 @@ export default {
             this.options.forEach((el) => {
               el.options.forEach((_el) => {
                 if (
-                  _el.value === objByPath(this.preLvData, this.dataIndex).get()
+                  _el.value == objByPath(this.preLvData, this.dataIndex).get()
                 ) {
                   label = _el.label;
                 }
@@ -550,8 +550,7 @@ export default {
           }
           // 非分组
           let opt = this.options.find(
-            (el) =>
-              el.value === objByPath(this.preLvData, this.dataIndex).get(),
+            (el) => el.value == objByPath(this.preLvData, this.dataIndex).get(),
           );
           return (opt && opt.label) || this.renderDefVal;
         } else if (this.valueType === 'file') {
