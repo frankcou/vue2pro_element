@@ -21,7 +21,7 @@
     <slot name="before"></slot>
     <template v-if="!isInline">
       <json2form-item
-        v-for="item in columns"
+        v-for="item in columnsWithSort"
         :key="`${item.dataIndex} ${item.title}`"
         v-model="model"
         :item="{ ...item, editable: isEditable(item) }"
@@ -30,7 +30,7 @@
     <template v-else>
       <el-row align="top" :gutter="10" style="margin-left: 0; margin-right: 0">
         <json2form-item
-          v-for="item in columns"
+          v-for="item in columnsWithSort"
           :key="`${item.dataIndex} ${item.title}`"
           v-model="model"
           :item="{ ...item, editable: isEditable(item) }"
@@ -83,6 +83,17 @@ export default {
     };
   },
   computed: {
+    columnsWithSort() {
+      return (this.columns || []).slice().sort((a, b) => {
+        if (a.order === undefined) {
+          return 1; // 如果 a.order 不存在，则 a 排在 b 后面
+        } else if (b.order === undefined) {
+          return -1; // 如果 b.order 不存在，则 a 排在 b 前面
+        } else {
+          return a.order - b.order; // 按照 order 属性的值进行升序排序
+        }
+      });
+    },
     // 用于同时监听两个参数
     columnsAndloading() {
       return { columns: this.columns, loading: this.loading };
