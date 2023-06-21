@@ -145,13 +145,15 @@ export default {
       return this.item.editable === undefined ? true : this.item.editable;
     },
     options() {
-      return this.getObj(this.item.options) || [];
+      const opts = this.getObj(this.item.options);
+      return opts || [];
     },
     dataIndex() {
       return this.getObj(this.item.dataIndex);
     },
     valueType() {
-      return this.getObj(this.item.valueType);
+      const vt = this.getObj(this.item.valueType);
+      return vt;
     },
     required() {
       return (
@@ -326,6 +328,10 @@ export default {
           </div>
         );
       };
+
+      if (this.valueType !== 'select' && 'options' in this.item) {
+        throw `dataIndex:${this.dataIndex},有options时必须要有valueType:'select'`;
+      }
 
       return (
         <InputWrap
