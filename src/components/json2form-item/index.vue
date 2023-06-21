@@ -173,7 +173,16 @@ export default {
       if (this.hideInDesc) return this.emptyVal;
       // 非hideInDesc的显示
       const def = objByPath(this.preLvData, this.dataIndex).get();
-      return def === null || def === undefined ? this.emptyVal : def;
+      /**后方单位 */
+      const suffix =
+        this.scopedSlots &&
+        this.scopedSlots.suffix &&
+        this.scopedSlots.suffix();
+      return def === null || def === undefined
+        ? this.emptyVal
+        : suffix
+        ? `${def} ${suffix}`
+        : def;
     },
     title() {
       return this.getObj(this.item.title);
@@ -721,7 +730,7 @@ export default {
   width: var(--formitem_content-w);
 }
 .group_items {
-  overflow: auto;
+  overflow-x: auto;
 }
 .group_row-index {
   margin: 0 15px;
