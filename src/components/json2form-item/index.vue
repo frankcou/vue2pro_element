@@ -136,7 +136,10 @@ export default {
       return this.getObj(this.item.formItemProps);
     },
     scopedSlots() {
-      return this.getObj(this.item.scopedSlots);
+      return this.getObj(
+        (this.fieldProps && this.fieldProps.scopedSlots) ||
+          this.item.scopedSlots,
+      );
     },
     editable() {
       return this.item.editable === undefined ? true : this.item.editable;
