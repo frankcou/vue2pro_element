@@ -78,6 +78,16 @@ export default {
       type: String,
       default: 'normal', // 'normal'|'abs'
     },
+    /** 
+     * 渲染搜索按钮部分的render 
+     * 例子： \
+     * searchBtnsRender(vnodes) { \
+          return this.$createElement('div', vnodes); \
+        } 
+     * */
+    searchBtnsRender: {
+      type: Function,
+    },
   },
   data() {
     return {
@@ -238,6 +248,32 @@ export default {
 
   render(h) {
     // console.log("pro-table渲染视图");
+    const searchBtns = [
+      <el-button
+        type="primary"
+        size="small"
+        vOn:click={() => this.handleSearch()}
+      >
+        查 询
+      </el-button>,
+      <el-button size="small" vOn:click={() => this.handleClear()}>
+        重置
+      </el-button>,
+      this.formHeight > this.searchBarHeight && (
+        <el-button
+          class="toggle_btn"
+          type="text"
+          vOn:click={() => this.toggle()}
+        >
+          {this.isOpen ? '收起' : '展开'}
+          <i
+            class={`el-icon-arrow-${
+              this.isOpen ? 'up' : 'down'
+            } el-icon--right`}
+          />
+        </el-button>
+      ),
+    ];
 
     return (
       <div
@@ -294,38 +330,9 @@ export default {
                 >
                   <div class="fl">{this.$slots.searchBarBottom}</div>
                   <div class="search-btns fr">
-                    {this.$slots.searchBtns || (
-                      <div>
-                        <el-button
-                          type="primary"
-                          size="small"
-                          vOn:click={() => this.handleSearch()}
-                        >
-                          查 询
-                        </el-button>
-                        <el-button
-                          size="small"
-                          vOn:click={() => this.handleClear()}
-                        >
-                          重置
-                        </el-button>
-                        {/* {this.formHeight}，{this.searchBarHeight} */}
-                        {this.formHeight > this.searchBarHeight && (
-                          <el-button
-                            class="toggle_btn"
-                            type="text"
-                            vOn:click={() => this.toggle()}
-                          >
-                            {this.isOpen ? '收起' : '展开'}
-                            <i
-                              class={`el-icon-arrow-${
-                                this.isOpen ? 'up' : 'down'
-                              } el-icon--right`}
-                            />
-                          </el-button>
-                        )}
-                      </div>
-                    )}
+                    {this.searchBtnsRender
+                      ? this.searchBtnsRender(searchBtns)
+                      : searchBtns}
                   </div>
                 </div>
               </template>
