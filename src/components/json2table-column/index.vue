@@ -68,7 +68,7 @@ export default {
                     let label = this.empty;
                     options.forEach((el) => {
                       el.options.forEach((_el) => {
-                        if (_el.value == value) {
+                        if (_el.value === value) {
                           label = _el.label;
                         }
                       });
@@ -76,7 +76,7 @@ export default {
                     return label;
                   }
                   // 非分组
-                  let opt = options.find((el) => el.value == value);
+                  let opt = options.find((el) => el.value === value);
                   return (opt && opt.label) || this.empty;
                 } else if (valueType === 'file') {
                   return (
