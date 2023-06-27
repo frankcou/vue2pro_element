@@ -160,32 +160,40 @@ export default {
           columns.forEach((item, idx) => {
             if (item.dataIndex) {
               const val = objByPath(this.initialValues, item.dataIndex).get();
+
               objByPath(model, item.dataIndex).set(
-                item.initialValue !== undefined
-                  ? item.initialValue
-                  : ![undefined, null].includes(this.initialValues && val)
-                  ? val
-                  : this.defVal(item),
+                this.editable
+                  ? item.initialValue !== undefined
+                    ? item.initialValue
+                    : ![undefined, null].includes(val)
+                    ? val
+                    : this.defVal(item)
+                  : val,
               );
 
-              objByPath(emptyData, item.dataIndex).set(this.defVal(item));
-
+              if (this.editable) {
+                objByPath(emptyData, item.dataIndex).set(this.defVal(item));
+              }
               if (typeof item.transform === 'function') {
                 let object = item.transform(
                   objByPath(model, item.dataIndex).get(),
                 );
                 Object.assign(model, object || {});
 
-                let object_empty = item.transform(
-                  objByPath(emptyData, item.dataIndex).get(),
-                );
-                objByPath(emptyData, item.dataIndex).set(this.defVal(item));
-                Object.assign(emptyData, object_empty || {});
+                if (this.editable) {
+                  let object_empty = item.transform(
+                    objByPath(emptyData, item.dataIndex).get(),
+                  );
+                  objByPath(emptyData, item.dataIndex).set(this.defVal(item));
+                  Object.assign(emptyData, object_empty || {});
+                }
               }
             }
           });
-          this.$set(this, 'emptyData', emptyData);
-          Object.freeze(this.emptyData);
+          if (this.editable) {
+            this.$set(this, 'emptyData', emptyData);
+            Object.freeze(this.emptyData);
+          }
 
           this.$set(this, 'model', model);
           console.log('model', model);
