@@ -546,6 +546,7 @@ export default {
 
     /**只读模式formitem渲染 */
     const formItemContent_read = (scoped) => {
+      if (this.item.dataRender) return this.getObj(this.item.dataRender);
       if (this.valueType === 'select') {
         // 分组
         if (this.options[0] && this.options[0].value === undefined) {
@@ -644,8 +645,6 @@ export default {
         <LayoutWrap inline={this.inline} colProps={this.colProps}>
           {this.editable && this.item.formItemRender ? (
             this.getObj(this.item.formItemRender)
-          ) : !this.editable && this.item.dataRender ? (
-            this.getObj(this.item.dataRender)
           ) : this.noFormItem ? (
             formItemContent()
           ) : (
