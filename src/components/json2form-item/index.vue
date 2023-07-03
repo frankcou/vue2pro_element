@@ -231,7 +231,7 @@ export default {
       } else {
         const obj = {};
         this.item.groupColumns.forEach((colItem) => {
-          objByPath(obj, colItem.dataIndex).set('');
+          objByPath(obj, colItem.dataIndex).set(colItem.initialValue || '');
         });
         objByPath(this.preLvData, this.dataIndex).get().push(obj);
       }
