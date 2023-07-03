@@ -162,7 +162,7 @@ export default {
           rules: [
             number(),
             floatNumber({ max: 2 }),
-            numberRange({ min: 0, max: 99999.99 }),
+            numberRange({ min: 0, max: 99999 }),
           ],
         },
         {
