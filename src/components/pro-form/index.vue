@@ -45,6 +45,7 @@
 
 <script>
 import { objByPath } from '../../utils';
+
 // const defVal = '';
 export default {
   name: 'pro-form',
@@ -119,19 +120,11 @@ export default {
     /**重置：表单第一次初始化的参数 */
     resetFields() {
       this.$refs['form'].resetFields();
+      // this.clearValidate();
     },
     /**清空表单 */
     clearFields() {
-      // let model = {};
-
-      // for (const key in this.model) {
-      //   if (Object.hasOwnProperty.call(this.model, key)) {
-      //     model[key] = this.defVal();
-      //   }
-      // }
-      // this.$set(this, 'model', model);
-      this.$set(this, 'model', this.emptyData);
-
+      this.model = JSON.parse(JSON.stringify(this.emptyData));
       this.clearValidate();
     },
     clearValidate(fn) {
@@ -191,8 +184,7 @@ export default {
             }
           });
           if (this.editable) {
-            this.$set(this, 'emptyData', emptyData);
-            Object.freeze(this.emptyData);
+            this.emptyData = Object.freeze(emptyData);
           }
 
           this.$set(this, 'model', model);
