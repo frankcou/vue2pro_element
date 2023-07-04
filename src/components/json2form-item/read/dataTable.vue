@@ -28,6 +28,9 @@ export default {
     handlePageCurrChange(e) {
       this.curr = e;
     },
+    handleSizeChange(e) {
+      this.pageSize = e;
+    },
   },
   render(h) {
     return (
@@ -44,13 +47,14 @@ export default {
         <div class="data_table-pagination_wrap">
           <el-pagination
             class="data_table-pagination"
-            hide-on-single-page={true}
+            // hide-on-single-page={true}
             pageSize={this.pageSize}
             pageSizes={[5, 10, 20, 50]}
             layout="total, sizes, prev, pager, next, jumper"
             total={this.dataSource.length || 0}
             on={{
               'current-change': this.handlePageCurrChange,
+              'size-change': this.handleSizeChange,
             }}
           ></el-pagination>
         </div>
