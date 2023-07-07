@@ -30,7 +30,7 @@
       <slot name="formBottom"></slot>
     </div>
 
-    <div slot="footer" v-if="editable">
+    <div slot="footer" v-if="isShowFooter">
       <slot name="footer">
         <el-button @click="handleClose" :disabled="btnLoading">{{
           closeText
@@ -50,6 +50,11 @@
 export default {
   name: 'dialog-form',
   props: {
+    /**是否显示下方按钮部分(原来是否显示取决于editable，输入showFooter则使用showFooter) */
+    showFooter: {
+      type: Boolean,
+      default: undefined,
+    },
     value: Boolean,
     title: String,
     /**字段配置（会在request之后生成页面，需要获取initialValues）*/
@@ -97,6 +102,10 @@ export default {
     };
   },
   computed: {
+    isShowFooter() {
+      if (this.showFooter === undefined) return this.editable;
+      return this.showFooter;
+    },
     isVisible: {
       get() {
         return this.value;
@@ -199,8 +208,4 @@ export default {
 };
 </script>
 
-<style scoped>
-::v-deep .el-dialog {
-  min-width: 850px;
-}
-</style>
+<style scoped></style>
