@@ -41,7 +41,7 @@ export default {
           style={{ margin: 0 }}
         ></el-form-item>
         <el-table data={this.dataSourceInVisible}>
-          <el-table-column type="index"></el-table-column>
+          <el-table-column label="序号" type="index"></el-table-column>
           {this.$scopedSlots.default()}
         </el-table>
         <div class="data_table-pagination_wrap">
