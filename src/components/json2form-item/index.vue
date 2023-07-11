@@ -9,6 +9,7 @@
 import { objByPath } from '../../utils';
 // import { ElTooltip } from 'element-ui';
 import DataTable from './read/dataTable.vue';
+
 /** 输入部分外层 */
 const InputWrap = {
   props: { type: String, errMsg: String },
@@ -63,7 +64,13 @@ const LayoutWrap = {
 
 export default {
   name: 'json2form-item',
-  components: { LayoutWrap, InputWrap, DataTable },
+  components: {
+    LayoutWrap,
+    InputWrap,
+    DataTable,
+    json2tableColumn: (resolve) =>
+      require(['../json2table-column/index'], resolve),
+  },
   props: {
     // json配置
     item: {
@@ -149,7 +156,7 @@ export default {
       return opts || [];
     },
     dataIndex() {
-      return this.getObj(this.item.dataIndex);
+      return this.item.dataIndex;
     },
     valueType() {
       const vt = this.getObj(this.item.valueType);
@@ -605,30 +612,13 @@ export default {
             {this.item.groupColumns.map((el) => {
               if (el.title) {
                 return (
-                  <el-table-column
-                    label={this.getObj(el.title)}
-                    key={el.dataIndex}
-                    props={{
-                      ...(el.tableColumnProps || {}),
-                      fixed:
-                        (el.tableColumnProps || {}).fixed || this.item.fixed,
+                  <json2table-column
+                    item={{
+                      ...el,
+                      title: this.getObj(el.title),
+                      valueType: this.getObj(el.valueType),
                     }}
-                    scopedSlots={{
-                      default: (scoped) => (
-                        <json2form-item
-                          class="group_row-col"
-                          key={`${this.dataIndex}.${scoped.$index}.${el.dataIndex}`}
-                          prop={`${this.dataIndex}.${scoped.$index}.${el.dataIndex}`}
-                          vModel={scoped.row}
-                          item={{
-                            ...el,
-                            editable: false,
-                          }}
-                          noFormItem
-                        ></json2form-item>
-                      ),
-                    }}
-                  ></el-table-column>
+                  />
                 );
               }
               return '';
