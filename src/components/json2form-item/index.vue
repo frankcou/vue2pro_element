@@ -708,9 +708,11 @@ export default {
 .group_item > ::v-deep .el-form-item__content {
   width: 100%;
 }
+/* 
+垃圾产品说不要框起来（在详情中更容易让人觉得是内容为空的字段了）
 .group_item > ::v-deep .el-form-item__content {
   border: 1px dashed #dcdfe6;
-}
+} */
 .group_item.is_editable > ::v-deep .el-form-item__content {
   padding-top: 15px;
 }
